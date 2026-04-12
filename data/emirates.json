@@ -1,0 +1,65 @@
+[
+  {
+    "id": "em-dubai",
+    "name": "Dubai",
+    "slug": "dubai",
+    "property_count": 0,
+    "image_url": "https://images.pexels.com/photos/1732414/pexels-photo-1732414.jpeg",
+    "description": "The global city of luxury, innovation and world-class living.",
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "em-abu-dhabi",
+    "name": "Abu Dhabi",
+    "slug": "abu-dhabi",
+    "property_count": 0,
+    "image_url": "https://images.pexels.com/photos/13003006/pexels-photo-13003006.jpeg",
+    "description": "The UAE capital — a blend of cultural heritage and modern ambition.",
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "em-sharjah",
+    "name": "Sharjah",
+    "slug": "sharjah",
+    "property_count": 0,
+    "image_url": "https://images.pexels.com/photos/2251247/pexels-photo-2251247.jpeg",
+    "description": "The cultural capital of the UAE with affordable luxury living.",
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "em-ajman",
+    "name": "Ajman",
+    "slug": "ajman",
+    "property_count": 0,
+    "image_url": "https://images.pexels.com/photos/2119713/pexels-photo-2119713.jpeg",
+    "description": "A charming emirate on the Arabian Gulf with waterfront living.",
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "em-rak",
+    "name": "Ras Al Khaimah",
+    "slug": "ras-al-khaimah",
+    "property_count": 0,
+    "image_url": "https://images.pexels.com/photos/3586966/pexels-photo-3586966.jpeg",
+    "description": "Breathtaking mountains meet pristine beaches in this scenic emirate.",
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "em-fujairah",
+    "name": "Fujairah",
+    "slug": "fujairah",
+    "property_count": 0,
+    "image_url": "https://images.pexels.com/photos/1125137/pexels-photo-1125137.jpeg",
+    "description": "The UAE's east coast gem — mountains, sea and serene living.",
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "em-uaq",
+    "name": "Umm Al Quwain",
+    "slug": "umm-al-quwain",
+    "property_count": 0,
+    "image_url": "https://images.pexels.com/photos/2079234/pexels-photo-2079234.jpeg",
+    "description": "A tranquil retreat offering waterfront villas away from the city.",
+    "created_at": "2024-01-01T00:00:00Z"
+  }
+]
