@@ -38,7 +38,7 @@ export default async function EmiratesSection() {
               Explore by City
             </h2>
             <p className="font-body text-gray-500 text-lg max-w-lg">
-              Each of the UAE&apos;s seven Emirates offers a unique lifestyle. Find your perfect address.
+              Each of the UAE seven Emirates offers a unique lifestyle. Find your perfect address.
             </p>
           </div>
           <Link

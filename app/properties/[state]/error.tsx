@@ -24,7 +24,7 @@ export default function EmirateError({
           Something went wrong
         </h2>
         <p className="font-body text-gray-500 text-sm mb-8">
-          We couldn't load properties for this emirate. Please try again.
+          We could not load properties for this emirate. Please try again.
         </p>
         <div className="flex gap-3 justify-center">
           <button

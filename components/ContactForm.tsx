@@ -86,7 +86,7 @@ export default function ContactForm() {
               </span>
             </div>
             <h2 className="font-display text-4xl sm:text-5xl font-bold text-white mb-6 leading-tight">
-              Let's Find Your
+              Let Find Your
               <span className="block italic text-[#C9A84C]">Perfect Property</span>
             </h2>
             <p className="font-body text-gray-400 text-lg mb-12 leading-relaxed">

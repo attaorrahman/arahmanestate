@@ -23,7 +23,7 @@ export default function HeroSection() {
           <div className="flex items-center gap-3 mb-6 animate-fade-in">
             <div className="h-px w-10 bg-gold" />
             <span className="text-gold font-body text-xs tracking-[0.25em] uppercase font-medium">
-              UAE's Premier Real Estate Platform
+              UAE Premier Real Estate Platform
             </span>
           </div>
 

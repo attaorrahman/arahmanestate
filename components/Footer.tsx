@@ -55,7 +55,7 @@ export default function Footer() {
               </div>
             </Link>
             <p className="font-body text-sm leading-relaxed mb-6 text-gray-500">
-              UAE's premier luxury real estate platform. Connecting discerning buyers with
+              UAE premier luxury real estate platform. Connecting discerning buyers with
               extraordinary properties across the Emirates since 2014.
             </p>
             <div className="flex gap-3">

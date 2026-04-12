@@ -77,7 +77,7 @@ export default function PropertyContactForm({
       <div className="text-center py-4">
         <CheckCircle size={28} className="text-[#C9A84C] mx-auto mb-2" />
         <p className="font-body text-gray-700 text-sm font-medium">Message sent!</p>
-        <p className="font-body text-gray-400 text-xs">We'll be in touch shortly.</p>
+        <p className="font-body text-gray-400 text-xs">We will be in touch shortly.</p>
       </div>
     );
   }

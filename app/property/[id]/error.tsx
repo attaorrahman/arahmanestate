@@ -24,7 +24,7 @@ export default function PropertyError({
           Property unavailable
         </h2>
         <p className="font-body text-gray-500 text-sm mb-8">
-          We couldn't load this property. It may have been removed or there was a network issue.
+          We could not load this property. It may have been removed or there was a network issue.
         </p>
         <div className="flex gap-3 justify-center">
           <button
