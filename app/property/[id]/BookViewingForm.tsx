@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Calendar, Clock, CircleCheck as CheckCircle, X } from 'lucide-react';
 import { submitInquiry } from '@/lib/client-actions';
 
-const WHATSAPP_NUMBER = '923216108400';
+const WHATSAPP_NUMBER = '971557757123';
 
 const TIME_SLOTS = [
   '09:00 AM', '10:00 AM', '11:00 AM', '12:00 PM',

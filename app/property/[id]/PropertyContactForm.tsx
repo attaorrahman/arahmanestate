@@ -82,7 +82,7 @@ export default function PropertyContactForm({
         <p className="font-body text-gray-700 text-sm font-medium">Message sent!</p>
         <p className="font-body text-gray-400 text-xs mb-3">We will be in touch shortly.</p>
         <a
-          href={`https://wa.me/923216108400?text=${waMessage}`}
+          href={`https://wa.me/971557757123?text=${waMessage}`}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 px-4 py-2 rounded-sm font-body text-xs font-medium text-white transition-colors"
