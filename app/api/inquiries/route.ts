@@ -5,9 +5,9 @@ import { readJSON, writeJSON } from '@/lib/data';
 import type { Property } from '@/lib/types';
 
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'smtp.gmail.com',
-  port: Number(process.env.SMTP_PORT) || 587,
-  secure: false,
+  host: process.env.SMTP_HOST || 'mail.bnhmasterkey.ae',
+  port: Number(process.env.SMTP_PORT) || 465,
+  secure: Number(process.env.SMTP_PORT) === 465,
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
@@ -116,18 +116,16 @@ export async function POST(req: NextRequest) {
     inquiries.unshift(newInquiry);
     writeJSON('inquiries.json', inquiries);
 
-    // Send email notification (don't block response if it fails)
-    try {
-      await sendNotificationEmail({
-        name: newInquiry.name,
-        email: newInquiry.email,
-        phone: newInquiry.phone,
-        message: newInquiry.message,
-        source: newInquiry.source,
-      });
-    } catch (emailErr) {
+    // Send email notification in background — don't block response
+    sendNotificationEmail({
+      name: newInquiry.name,
+      email: newInquiry.email,
+      phone: newInquiry.phone,
+      message: newInquiry.message,
+      source: newInquiry.source,
+    }).catch((emailErr) => {
       console.error('Failed to send notification email:', emailErr);
-    }
+    });
 
     return NextResponse.json(newInquiry, { status: 201 });
   } catch (e: unknown) {

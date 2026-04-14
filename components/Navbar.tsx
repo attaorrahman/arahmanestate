@@ -33,16 +33,23 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-9 h-9 rounded-sm bg-gold flex items-center justify-center">
-              <span className="font-display text-white font-bold text-base">L</span>
-            </div>
-            <div>
-              <span className="font-display text-white text-xl font-semibold tracking-wide">
-                Lux<span className="text-gold">Estate</span>
+            <img
+              src="/logo.jpeg"
+              alt="BNH MasterKey logo"
+              className="w-12 h-12 sm:w-14 sm:h-14 shrink-0 object-contain"
+            />
+
+            <div className="leading-tight">
+              <span className="font-display text-white text-base sm:text-lg font-bold tracking-[0.15em] block">
+                BNH <span className="text-gold">MASTERKEY</span>
               </span>
-              <p className="text-[10px] text-gray-400 tracking-[0.2em] uppercase font-body leading-none">
-                UAE Premium Properties
-              </p>
+              <div className="flex items-center gap-2 mt-1.5">
+                <span className="h-px flex-1 bg-white/30" />
+                <span className="text-[9px] sm:text-[10px] text-gray-300 tracking-[0.3em] uppercase font-body leading-none whitespace-nowrap">
+                  Properties L.L.C
+                </span>
+                <span className="h-px flex-1 bg-white/30" />
+              </div>
             </div>
           </Link>
 
@@ -51,7 +58,7 @@ export default function Navbar() {
               <Link
                 key={link.label}
                 href={link.href}
-                className="nav-link font-body text-sm font-medium text-gray-300 hover:text-white transition-colors"
+                className="nav-link font-body text-sm font-medium text-gray-300 hover:text-gold transition-colors"
               >
                 {link.label}
               </Link>

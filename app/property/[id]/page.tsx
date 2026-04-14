@@ -3,12 +3,13 @@ import { notFound } from 'next/navigation';
 export const dynamic = 'force-dynamic';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Bed, Bath, Square, MapPin, CircleCheck as CheckCircle2, ArrowLeft, Phone, Mail, Heart, Share2, Star, Building2, Calendar } from 'lucide-react';
+import { Bed, Bath, Square, MapPin, CircleCheck as CheckCircle2, ArrowLeft, Phone, Mail, Heart, Share2, Star, Building2 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { getPropertyById, getEmirateBySlug, getDefaultAgent } from '@/lib/queries';
 import { formatPrice } from '@/lib/utils';
 import PropertyContactForm from './PropertyContactForm';
+import BookViewingForm from './BookViewingForm';
 
 interface Props {
   params: { id: string };
@@ -16,9 +17,9 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const property = await getPropertyById(params.id).catch(() => null);
-  if (!property) return { title: 'Property — LuxEstate UAE' };
+  if (!property) return { title: 'Property — BNH MasterKey' };
   return {
-    title: `${property.title} — LuxEstate UAE`,
+    title: `${property.title} — BNH MasterKey`,
     description: property.description || `${property.title} in ${property.location}. ${formatPrice(property.price, property.price_type)}.`,
   };
 }
@@ -241,18 +242,7 @@ export default async function PropertyPage({ params }: Props) {
                 <PropertyContactForm propertyTitle={property.title} propertyId={property.id} />
               </div>
 
-              <div className="bg-[#0D0D0D] rounded-sm p-5 border border-white/5">
-                <div className="flex items-center gap-2 mb-3">
-                  <Calendar size={16} className="text-[#C9A84C]" />
-                  <p className="font-display text-white font-semibold text-sm">Schedule Viewing</p>
-                </div>
-                <p className="font-body text-gray-500 text-xs mb-4">
-                  Book a private viewing with our specialist agent.
-                </p>
-                <button className="btn-gold w-full py-2.5 rounded-sm font-body text-sm font-medium">
-                  Book Viewing
-                </button>
-              </div>
+              <BookViewingForm propertyTitle={property.title} propertyId={property.id} />
             </div>
           </div>
         </div>

@@ -47,5 +47,5 @@ export interface Inquiry {
   phone?: string;
   message: string;
   property_id?: string;
-  source: 'contact_form' | 'property_inquiry';
+  source: 'contact_form' | 'property_inquiry' | 'booking';
 }

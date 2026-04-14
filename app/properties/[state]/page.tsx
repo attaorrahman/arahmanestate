@@ -13,9 +13,9 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const emirate = await getEmirateBySlug(params.state).catch(() => null);
-  if (!emirate) return { title: 'Properties — LuxEstate UAE' };
+  if (!emirate) return { title: 'Properties — BNH MasterKey' };
   return {
-    title: `Properties in ${emirate.name} — LuxEstate UAE`,
+    title: `Properties in ${emirate.name} — BNH MasterKey`,
     description: `Discover luxury properties in ${emirate.name}. Villas, apartments, penthouses and more. ${emirate.description}`,
   };
 }

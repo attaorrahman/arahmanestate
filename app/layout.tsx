@@ -2,11 +2,11 @@ import './globals.css';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'LuxEstate UAE — Premium Real Estate in the Emirates',
+  title: 'BNH MasterKey — Premium Real Estate in the Emirates',
   description: 'Discover the most exclusive properties across Dubai, Abu Dhabi, Sharjah, and all UAE Emirates. Luxury villas, penthouses, apartments and commercial spaces.',
   keywords: 'UAE real estate, Dubai properties, luxury villas, penthouses, apartments UAE, buy property Dubai',
   openGraph: {
-    title: 'LuxEstate UAE — Premium Real Estate',
+    title: 'BNH MasterKey — Premium Real Estate',
     description: 'Discover the most exclusive properties across UAE Emirates.',
     images: [{ url: 'https://images.pexels.com/photos/1467300/pexels-photo-1467300.jpeg' }],
   },

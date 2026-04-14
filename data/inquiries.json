@@ -1,1 +1,39 @@
-[]
+[
+  {
+    "id": "624535a1-19dd-4781-b37e-af714850c87d",
+    "name": "Wasif Ausaf",
+    "email": "wasigausaf@gmail.com",
+    "phone": "03298639949",
+    "message": "Viewing request for \"Sandy Beach Beachfront Villa\" on 2026-04-17 at 02:00 PM.",
+    "source": "booking",
+    "property_id": "prop-031",
+    "created_at": "2026-04-14T03:47:24.351Z"
+  },
+  {
+    "id": "02462c01-f727-4adb-82ad-25f93c137236",
+    "name": "atatatat",
+    "email": "wasigausaf@gmail.com",
+    "message": "I'm interested in \"Sandy Beach Beachfront Villa\"",
+    "source": "property_inquiry",
+    "property_id": "prop-031",
+    "created_at": "2026-04-14T03:46:45.380Z"
+  },
+  {
+    "id": "e1d04cc2-f642-40c9-a2e4-6b0653a4a938",
+    "name": "Malik Atta Ur Rahman",
+    "email": "malikattaurahman@gmail.com",
+    "phone": "+923008747605",
+    "message": "testing message done or not",
+    "source": "contact_form",
+    "created_at": "2026-04-14T03:43:53.181Z"
+  },
+  {
+    "id": "acdba729-dde0-4e51-8914-9e1532a0f320",
+    "name": "Muhammad Atta Ur Rahman",
+    "email": "malikattaurahman@gmail.com",
+    "phone": "+923216108400",
+    "message": "testing 3 bedrooms",
+    "source": "contact_form",
+    "created_at": "2026-04-12T20:35:58.415Z"
+  }
+]
