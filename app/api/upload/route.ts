@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { randomUUID } from 'crypto';
-import fs from 'fs';
-import path from 'path';
+import { supabase } from '@/lib/supabase';
 
-const UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads');
 const MAX_SIZE = 8 * 1024 * 1024; // 8MB
 const ALLOWED = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+const BUCKET = 'property-images';
 
 export async function POST(req: NextRequest) {
   try {
@@ -22,16 +21,26 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'File too large (max 8MB)' }, { status: 400 });
     }
 
-    if (!fs.existsSync(UPLOAD_DIR)) {
-      fs.mkdirSync(UPLOAD_DIR, { recursive: true });
-    }
-
     const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '');
     const filename = `${randomUUID()}.${ext || 'jpg'}`;
     const buffer = Buffer.from(await file.arrayBuffer());
-    fs.writeFileSync(path.join(UPLOAD_DIR, filename), buffer);
 
-    return NextResponse.json({ url: `/uploads/${filename}` }, { status: 201 });
+    const { error } = await supabase.storage
+      .from(BUCKET)
+      .upload(filename, buffer, {
+        contentType: file.type,
+        upsert: false,
+      });
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    const { data: publicUrlData } = supabase.storage
+      .from(BUCKET)
+      .getPublicUrl(filename);
+
+    return NextResponse.json({ url: publicUrlData.publicUrl }, { status: 201 });
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : 'Upload failed';
     return NextResponse.json({ error: msg }, { status: 500 });
