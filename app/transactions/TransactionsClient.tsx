@@ -63,7 +63,7 @@ function formatFullPrice(price: number): string {
   return price.toLocaleString('en-AE');
 }
 
-export default function TransactionsClient({ transactions }: TransactionsClientProps) {
+export default function TransactionsClient({ initialTransactions: transactions }: TransactionsClientProps) {
   const { t, dir } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [emirate, setEmirate] = useState('All');
