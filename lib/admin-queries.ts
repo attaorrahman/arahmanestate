@@ -56,6 +56,7 @@ export interface InquiryWithProperty {
   source: string;
   created_at: string;
   property_id: string | null;
+  email_status?: string | null;
   properties: { title: string } | null;
 }
 
@@ -74,6 +75,13 @@ export interface DashboardStats {
   featured: number;
   totalInquiries: number;
   byEmirate: { slug: string; name: string; count: number }[];
+  totalMeetings: number;
+  meetingsToday: number;
+  meetingsUpcoming: number;
+  meetingsPast: number;
+  meetingsByPurpose: { name: string; value: number }[];
+  inquiriesBySource: { name: string; value: number }[];
+  totalPartners: number;
 }
 
 export async function getDashboardStats(): Promise<DashboardStats> {

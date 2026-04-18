@@ -1,5 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
+import LoadingScreen from '@/components/LoadingScreen';
+import { LanguageProvider } from '@/lib/language-context';
 
 export const metadata: Metadata = {
   title: 'BNH MasterKey — Premium Real Estate in the Emirates',
@@ -27,7 +29,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body suppressHydrationWarning>{children}</body>
+      <body suppressHydrationWarning>
+        <LanguageProvider>
+          <LoadingScreen />
+          {children}
+        </LanguageProvider>
+      </body>
     </html>
   );
 }

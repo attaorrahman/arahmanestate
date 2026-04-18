@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { Bed, Bath, Square, MapPin, Heart, CircleCheck as CheckCircle2, ArrowUpRight } from 'lucide-react';
 import type { Property } from '@/lib/types';
 import { formatPrice } from '@/lib/utils';
+import { useLanguage } from '@/lib/language-context';
 
 interface Props {
   property: Property;
@@ -13,13 +14,20 @@ interface Props {
 
 export default function PropertyCard({ property, priority = false }: Props) {
   const [liked, setLiked] = useState(false);
+  const { t } = useLanguage();
 
   return (
     <div className="card-hover bg-white rounded-sm overflow-hidden border border-gray-100 group">
       <Link href={`/property/${property.id}`} className="block">
         <div className="relative image-zoom aspect-[4/3] bg-gray-100">
           <img
-            src={`${property.image_url}?auto=compress&cs=tinysrgb&w=600&q=75`}
+            src={
+              property.image_url
+                ? property.image_url.includes('images.pexels.com')
+                  ? `${property.image_url}?auto=compress&cs=tinysrgb&w=600&q=75`
+                  : property.image_url
+                : '/logo.jpeg'
+            }
             alt={property.title}
             className="w-full h-full object-cover"
             loading={priority ? 'eager' : 'lazy'}
@@ -33,11 +41,11 @@ export default function PropertyCard({ property, priority = false }: Props) {
                 ? 'bg-[#1A1A1A] text-white'
                 : 'bg-[#C9A84C] text-white'
             }`}>
-              {property.price_type === 'sale' ? 'FOR SALE' : 'FOR RENT'}
+              {property.price_type === 'sale' ? t('card.for_sale') : t('card.for_rent')}
             </span>
             {property.is_featured && (
               <span className="font-body text-xs font-semibold px-2.5 py-1 rounded-sm tracking-wide bg-white text-[#C9A84C] border border-[#C9A84C]/30">
-                FEATURED
+                {t('card.featured')}
               </span>
             )}
           </div>
@@ -59,7 +67,7 @@ export default function PropertyCard({ property, priority = false }: Props) {
             <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               <div className="flex items-center gap-1.5 bg-white/95 backdrop-blur-sm rounded-sm px-2 py-1">
                 <CheckCircle2 size={11} className="text-green-500" />
-                <span className="font-body text-xs text-green-700 font-medium">Verified</span>
+                <span className="font-body text-xs text-green-700 font-medium">{t('card.verified')}</span>
               </div>
             </div>
           )}
@@ -71,7 +79,7 @@ export default function PropertyCard({ property, priority = false }: Props) {
           <p className="font-display text-[#C9A84C] text-2xl font-bold">
             {formatPrice(property.price, property.price_type)}
             {property.price_type === 'rent' && (
-              <span className="text-gray-400 text-sm font-body font-normal">/yr</span>
+              <span className="text-gray-400 text-sm font-body font-normal">{t('card.yr')}</span>
             )}
           </p>
           <span className="text-xs font-body text-gray-400 bg-gray-50 px-2 py-1 rounded-sm capitalize border border-gray-100">
@@ -94,19 +102,19 @@ export default function PropertyCard({ property, priority = false }: Props) {
           {property.bedrooms !== null && (
             <div className="flex items-center gap-1.5 text-gray-500">
               <Bed size={14} />
-              <span className="font-body text-sm">{property.bedrooms} Beds</span>
+              <span className="font-body text-sm">{property.bedrooms} {t('card.beds')}</span>
             </div>
           )}
           {property.bathrooms !== null && (
             <div className="flex items-center gap-1.5 text-gray-500">
               <Bath size={14} />
-              <span className="font-body text-sm">{property.bathrooms} Baths</span>
+              <span className="font-body text-sm">{property.bathrooms} {t('card.baths')}</span>
             </div>
           )}
           {property.sqft !== null && (
             <div className="flex items-center gap-1.5 text-gray-500 ml-auto">
               <Square size={14} />
-              <span className="font-body text-sm">{property.sqft.toLocaleString()} sqft</span>
+              <span className="font-body text-sm">{property.sqft.toLocaleString()} {t('card.sqft')}</span>
             </div>
           )}
         </div>
@@ -115,7 +123,7 @@ export default function PropertyCard({ property, priority = false }: Props) {
           href={`/property/${property.id}`}
           className="mt-4 w-full flex items-center justify-center gap-2 border border-[#C9A84C]/40 text-[#C9A84C] hover:bg-[#C9A84C] hover:text-white transition-all duration-200 py-2.5 rounded-sm font-body text-sm font-medium group/btn"
         >
-          View Details
+          {t('card.view_details')}
           <ArrowUpRight size={14} className="transition-transform group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
         </Link>
       </div>

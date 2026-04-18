@@ -1,0 +1,58 @@
+[
+  {
+    "id": "p-001",
+    "name": "EMAAR",
+    "logo_url": null,
+    "highlight": true,
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "p-002",
+    "name": "DAMAC",
+    "logo_url": null,
+    "highlight": false,
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "p-004",
+    "name": "SOBHA",
+    "logo_url": null,
+    "highlight": false,
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "p-005",
+    "name": "MERAAS",
+    "logo_url": null,
+    "highlight": false,
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "p-006",
+    "name": "HABIBI",
+    "logo_url": null,
+    "highlight": true,
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "p-007",
+    "name": "ALDAR",
+    "logo_url": null,
+    "highlight": false,
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "p-008",
+    "name": "DANUBE",
+    "logo_url": null,
+    "highlight": false,
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "b496e7c9-3955-4348-98b3-619fec07be62",
+    "name": "TestKey",
+    "logo_url": null,
+    "highlight": true,
+    "created_at": "2026-04-17T03:03:51.430Z"
+  }
+]

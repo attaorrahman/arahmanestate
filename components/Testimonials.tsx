@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight, Star, Quote } from 'lucide-react';
+import { useLanguage } from '@/lib/language-context';
 
 const testimonials = [
   {
@@ -9,7 +10,7 @@ const testimonials = [
     role: 'Real Estate Investor',
     location: 'Dubai',
     rating: 5,
-    text: 'LuxEstate made finding my dream villa on Palm Jumeirah an extraordinary experience. Their agents understood my vision perfectly and guided me through every step with unmatched professionalism.',
+    text: 'BNH MasterKey made finding my dream villa on Palm Jumeirah an extraordinary experience. Their agents understood my vision perfectly and guided me through every step with unmatched professionalism.',
     avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=150',
   },
   {
@@ -17,7 +18,7 @@ const testimonials = [
     role: 'Expatriate Homeowner',
     location: 'Abu Dhabi',
     rating: 5,
-    text: 'As a first-time buyer in the UAE, I was nervous about the process. LuxEstate\'s team was patient, transparent, and incredibly knowledgeable. I found the perfect Corniche apartment within weeks.',
+    text: 'As a first-time buyer in the UAE, I was nervous about the process. BNH MasterKey\'s team was patient, transparent, and incredibly knowledgeable. I found the perfect Corniche apartment within weeks.',
     avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=150',
   },
   {
@@ -25,7 +26,7 @@ const testimonials = [
     role: 'Business Executive',
     location: 'Sharjah',
     rating: 5,
-    text: 'The attention to detail and the quality of properties listed on LuxEstate is unparalleled. I found my family villa through them and the entire experience was seamless from start to finish.',
+    text: 'The attention to detail and the quality of properties listed on BNH MasterKey is unparalleled. I found my family villa through them and the entire experience was seamless from start to finish.',
     avatar: 'https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=150',
   },
   {
@@ -33,13 +34,14 @@ const testimonials = [
     role: 'Portfolio Investor',
     location: 'Dubai',
     rating: 5,
-    text: 'I\'ve worked with many real estate companies across the world — LuxEstate stands out for their market insights, verified listings, and the caliber of properties they represent. Truly exceptional.',
+    text: 'I\'ve worked with many real estate companies across the world — BNH MasterKey stands out for their market insights, verified listings, and the caliber of properties they represent. Truly exceptional.',
     avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=150',
   },
 ];
 
 export default function Testimonials() {
   const [current, setCurrent] = useState(0);
+  const { t, dir } = useLanguage();
 
   const prev = () => setCurrent((c) => (c - 1 + testimonials.length) % testimonials.length);
   const next = () => setCurrent((c) => (c + 1) % testimonials.length);
@@ -50,18 +52,18 @@ export default function Testimonials() {
   ];
 
   return (
-    <section className="py-24 bg-[#FAFAF8] overflow-hidden">
+    <section className="py-24 bg-[#FAFAF8] overflow-hidden" dir={dir}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-14 gap-6">
           <div>
             <div className="flex items-center gap-3 mb-4">
               <div className="h-px w-10 bg-[#C9A84C]" />
               <span className="text-[#C9A84C] font-body text-xs tracking-[0.25em] uppercase font-medium">
-                Client Stories
+                {t('testimonials.tagline')}
               </span>
             </div>
             <h2 className="font-display text-4xl sm:text-5xl font-bold text-gray-900">
-              What Our Clients Say
+              {t('testimonials.title')}
             </h2>
           </div>
           <div className="flex gap-3">

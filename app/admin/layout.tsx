@@ -4,14 +4,16 @@ import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import {
-  LayoutDashboard, Building2, MessageSquare, LogOut, Menu, X, ChevronRight,
+  LayoutDashboard, Building2, MessageSquare, LogOut, Menu, X, ChevronRight, Settings, CalendarClock, Bell, Handshake,
 } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
 
 const navItems = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/properties', label: 'Properties', icon: Building2 },
   { href: '/admin/inquiries', label: 'Inquiries', icon: MessageSquare },
+  { href: '/admin/meetings', label: 'Meetings', icon: CalendarClock },
+  { href: '/admin/partners', label: 'Partners', icon: Handshake },
+  { href: '/admin/settings', label: 'Settings', icon: Settings },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -19,21 +21,42 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname();
   const [userEmail, setUserEmail] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [meetingCount, setMeetingCount] = useState(0);
   const isLoginPage = pathname === '/admin/login';
 
   useEffect(() => {
     if (isLoginPage) return;
-    supabase.auth.getSession().then(({ data }) => {
-      if (!data.session) {
-        router.replace('/admin/login');
-      } else {
-        setUserEmail(data.session.user.email || '');
-      }
-    });
+    fetch('/api/admin/me', { cache: 'no-store' })
+      .then(async (res) => {
+        if (!res.ok) {
+          router.replace('/admin/login');
+          return;
+        }
+        const data = (await res.json()) as { email: string };
+        setUserEmail(data.email);
+      })
+      .catch(() => router.replace('/admin/login'));
   }, [isLoginPage, router]);
 
+  useEffect(() => {
+    if (isLoginPage) return;
+    const loadCount = () => {
+      fetch('/api/meetings', { cache: 'no-store' })
+        .then((res) => (res.ok ? res.json() : []))
+        .then((data: { date: string; time: string }[]) => {
+          const now = new Date();
+          const upcoming = data.filter((m) => new Date(`${m.date}T${m.time}`) >= now);
+          setMeetingCount(upcoming.length);
+        })
+        .catch(() => {});
+    };
+    loadCount();
+    const interval = setInterval(loadCount, 60000);
+    return () => clearInterval(interval);
+  }, [isLoginPage, pathname]);
+
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    await fetch('/api/admin/logout', { method: 'POST' });
     router.replace('/admin/login');
   };
 
@@ -57,11 +80,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       >
         {/* Logo */}
         <div className="flex items-center gap-3 px-6 py-5 border-b border-white/8">
-          <div className="w-8 h-8 bg-[#C9A84C] rounded-sm flex items-center justify-center">
-            <Building2 size={16} className="text-black" />
-          </div>
+          <img src="/BNHLogo.jpg" alt="BNH MasterKey" className="w-8 h-8 rounded-sm object-contain" />
           <div>
-            <p className="text-white font-display font-bold text-sm leading-none">LuxEstate</p>
+            <p className="text-white font-display font-bold text-sm leading-none">BNH <span className="text-[#C9A84C]">MasterKey</span></p>
             <p className="text-gray-500 text-xs mt-0.5">Admin Panel</p>
           </div>
           <button
@@ -76,6 +97,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
           {navItems.map(({ href, label, icon: Icon }) => {
             const active = pathname.startsWith(href);
+            const isMeetings = href === '/admin/meetings';
             return (
               <Link
                 key={href}
@@ -89,7 +111,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               >
                 <Icon size={16} />
                 {label}
-                {active && <ChevronRight size={14} className="ml-auto" />}
+                {isMeetings && meetingCount > 0 && (
+                  <span className="ml-auto min-w-[20px] h-[20px] bg-[#C9A84C] text-black text-[10px] font-bold rounded-full px-1.5 flex items-center justify-center">
+                    {meetingCount > 99 ? '99+' : meetingCount}
+                  </span>
+                )}
+                {!isMeetings && active && <ChevronRight size={14} className="ml-auto" />}
               </Link>
             );
           })}
@@ -126,13 +153,28 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               {navItems.find((n) => pathname.startsWith(n.href))?.label || 'Admin'}
             </h1>
           </div>
-          <Link
-            href="/"
-            target="_blank"
-            className="ml-auto text-xs text-gray-400 hover:text-[#C9A84C] transition-colors"
-          >
-            View site →
-          </Link>
+          <div className="ml-auto flex items-center gap-4">
+            <Link
+              href="/admin/meetings"
+              className="relative p-2 -m-2 text-gray-500 hover:text-[#C9A84C] transition-colors"
+              aria-label={`Meetings (${meetingCount} upcoming)`}
+              title={meetingCount > 0 ? `${meetingCount} upcoming meeting${meetingCount === 1 ? '' : 's'}` : 'Meetings'}
+            >
+              <Bell size={18} />
+              {meetingCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-[16px] bg-[#C9A84C] text-black text-[10px] font-bold rounded-full px-1 flex items-center justify-center">
+                  {meetingCount > 99 ? '99+' : meetingCount}
+                </span>
+              )}
+            </Link>
+            <Link
+              href="/"
+              target="_blank"
+              className="text-xs text-gray-400 hover:text-[#C9A84C] transition-colors"
+            >
+              View site →
+            </Link>
+          </div>
         </header>
 
         {/* Page content */}

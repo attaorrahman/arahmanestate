@@ -31,12 +31,15 @@ export async function getFeaturedProperties(): Promise<Property[]> {
     .filter((p) => p.is_featured)
     .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
-  // One per emirate first, then extras
-  const seen = new Set<string>();
+  // Newest featured always leads, then diversify by emirate, then extras.
+  if (featured.length === 0) return [];
+  const [newest, ...rest] = featured;
+
+  const seen = new Set<string>([newest.emirate_slug]);
   const perEmirate: Property[] = [];
   const extras: Property[] = [];
 
-  for (const p of featured) {
+  for (const p of rest) {
     if (!seen.has(p.emirate_slug)) {
       seen.add(p.emirate_slug);
       perEmirate.push(p);
@@ -45,7 +48,7 @@ export async function getFeaturedProperties(): Promise<Property[]> {
     }
   }
 
-  return [...perEmirate, ...extras].slice(0, 7);
+  return [newest, ...perEmirate, ...extras].slice(0, 7);
 }
 
 export async function getPropertiesByEmirate(
@@ -78,6 +81,11 @@ export async function getPropertiesByEmirate(
   }
 
   return result.sort((a, b) => (b.is_featured ? 1 : 0) - (a.is_featured ? 1 : 0));
+}
+
+export async function getAllProperties(): Promise<Property[]> {
+  const properties = readJSON<Property[]>('properties.json');
+  return properties.sort((a, b) => (b.is_featured ? 1 : 0) - (a.is_featured ? 1 : 0));
 }
 
 export async function getPropertyById(id: string): Promise<Property | null> {

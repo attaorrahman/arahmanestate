@@ -1,11 +1,25 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { MessageSquare } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { MessageSquare, CircleCheck as CheckCircle2, AlertTriangle } from 'lucide-react';
 import { getAllInquiries } from '@/lib/admin-queries';
 import type { InquiryWithProperty } from '@/lib/admin-queries';
 
+function sourceLabel(source: string) {
+  if (source === 'property_inquiry') return 'Property';
+  if (source === 'booking') return 'Booking';
+  return 'Contact Form';
+}
+
+function sourceBadgeClass(source: string) {
+  if (source === 'property_inquiry') return 'bg-blue-50 text-blue-700';
+  if (source === 'booking') return 'bg-purple-50 text-purple-700';
+  return 'bg-gray-100 text-gray-600';
+}
+
 export default function InquiriesPage() {
+  const router = useRouter();
   const [inquiries, setInquiries] = useState<InquiryWithProperty[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -36,12 +50,17 @@ export default function InquiriesPage() {
                   <th className="text-left px-4 py-3 text-gray-500 font-medium text-xs uppercase tracking-wide">Message</th>
                   <th className="text-left px-4 py-3 text-gray-500 font-medium text-xs uppercase tracking-wide">Property</th>
                   <th className="text-left px-4 py-3 text-gray-500 font-medium text-xs uppercase tracking-wide">Source</th>
+                  <th className="text-left px-4 py-3 text-gray-500 font-medium text-xs uppercase tracking-wide">Email</th>
                   <th className="text-left px-4 py-3 text-gray-500 font-medium text-xs uppercase tracking-wide">Date</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
                 {inquiries.map((inq) => (
-                  <tr key={inq.id} className="hover:bg-gray-50/50 transition-colors">
+                  <tr
+                    key={inq.id}
+                    onClick={() => router.push(`/admin/inquiries/${inq.id}`)}
+                    className="hover:bg-gray-50/50 transition-colors cursor-pointer"
+                  >
                     <td className="px-4 py-3">
                       <p className="text-gray-900 font-medium">{inq.name}</p>
                       <p className="text-gray-400 text-xs">{inq.email}</p>
@@ -58,13 +77,22 @@ export default function InquiriesPage() {
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      <span className={`text-xs px-2 py-0.5 rounded-sm font-medium ${
-                        inq.source === 'property_inquiry'
-                          ? 'bg-blue-50 text-blue-700'
-                          : 'bg-gray-100 text-gray-600'
-                      }`}>
-                        {inq.source === 'property_inquiry' ? 'Property' : 'Contact Form'}
+                      <span className={`text-xs px-2 py-0.5 rounded-sm font-medium ${sourceBadgeClass(inq.source)}`}>
+                        {sourceLabel(inq.source)}
                       </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      {inq.email_status === 'sent' ? (
+                        <span className="inline-flex items-center gap-1 text-green-600 text-xs">
+                          <CheckCircle2 size={12} /> Sent
+                        </span>
+                      ) : inq.email_status?.startsWith('failed') ? (
+                        <span className="inline-flex items-center gap-1 text-red-500 text-xs" title={inq.email_status}>
+                          <AlertTriangle size={12} /> Failed
+                        </span>
+                      ) : (
+                        <span className="text-gray-300 text-xs">—</span>
+                      )}
                     </td>
                     <td className="px-4 py-3 text-gray-400 text-xs whitespace-nowrap">
                       {new Date(inq.created_at).toLocaleDateString('en-GB', {

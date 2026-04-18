@@ -1,5 +1,107 @@
 [
   {
+    "title": "luxury",
+    "price": 5000000,
+    "price_type": "sale",
+    "property_type": "apartment",
+    "emirate_slug": "ajman",
+    "location": "Dubai",
+    "bedrooms": 4,
+    "bathrooms": 2,
+    "sqft": 4500,
+    "image_url": "/uploads/c22fb807-daee-4bde-b043-986d6ed795a3.jpg",
+    "images": [
+      "/uploads/74873e97-6643-4870-8a36-4d9c6663cf93.jpg",
+      "/uploads/54d133cb-7e97-468a-8c27-a0113cfee195.jpg",
+      "/uploads/47315d05-07f0-4568-bde7-7877545f472d.jpg"
+    ],
+    "description": "test",
+    "is_featured": true,
+    "is_verified": true,
+    "amenities": [
+      "gym"
+    ],
+    "latitude": 25.124072,
+    "longitude": 55.382318,
+    "id": "b16a2559-2474-4879-9d03-2fa6c4431d12",
+    "created_at": "2026-04-17T14:53:49.874Z"
+  },
+  {
+    "title": "Residential Flat in Sharjah",
+    "price": 54000,
+    "price_type": "rent",
+    "property_type": "apartment",
+    "emirate_slug": "sharjah",
+    "location": "sharjah",
+    "bedrooms": 3,
+    "bathrooms": 2,
+    "sqft": 2500,
+    "image_url": "/uploads/6b1191a1-78a3-4f10-b84e-02f218406f67.jpg",
+    "images": [
+      "/uploads/1efcf79e-07f7-4817-85e3-c5ba09133d71.jpg",
+      "/uploads/9393bc48-e21e-47e8-aa46-75402926f39c.jpg",
+      "/uploads/bd924438-cc41-4d3c-bfe2-025e16982dc0.jpg"
+    ],
+    "description": "3 bedrooms with 2 washrooms and covered area is 2500 SQFT",
+    "is_featured": true,
+    "is_verified": true,
+    "amenities": [
+      "pool",
+      "gym"
+    ],
+    "latitude": 25.358509,
+    "longitude": 56.339242,
+    "id": "a3f3c3d8-28a4-4441-a3ba-ce94ef955588",
+    "created_at": "2026-04-17T10:19:21.952Z"
+  },
+  {
+    "title": "villa in Dubai",
+    "price": 5000000,
+    "price_type": "sale",
+    "property_type": "villa",
+    "emirate_slug": "dubai",
+    "location": "dubai",
+    "bedrooms": 6,
+    "bathrooms": 4,
+    "sqft": 4509,
+    "image_url": "/uploads/a04b666f-b592-4d70-89fa-00684491ef48.jpg",
+    "description": "villa",
+    "is_featured": true,
+    "is_verified": true,
+    "amenities": [
+      "Smart House",
+      "Pool",
+      "Parking",
+      "Sports Court"
+    ],
+    "latitude": 25.231835,
+    "longitude": 55.287146,
+    "id": "3d65bc77-f2c7-4e40-ac23-50e06703d103",
+    "created_at": "2026-04-17T06:45:40.927Z"
+  },
+  {
+    "title": "Residential flat in Dubai",
+    "price": 3000000,
+    "price_type": "sale",
+    "property_type": "apartment",
+    "emirate_slug": "dubai",
+    "location": "Dubai mairina ,Downtown",
+    "bedrooms": 5,
+    "bathrooms": 3,
+    "sqft": 3400,
+    "image_url": "/uploads/201a0281-a886-4230-aeb6-141f76c87f79.png",
+    "description": "An appartment with 5 bedroms and 3 Bathrooms. Which are in 3400 SQFT. It also contains a sports hall with swimming pool.",
+    "is_featured": true,
+    "is_verified": true,
+    "amenities": [
+      "Pool",
+      "gym",
+      "Parking"
+    ],
+    "id": "011bb219-334f-400b-9aa2-899e5c83387c",
+    "created_at": "2026-04-16T17:15:44.960Z"
+  },
+  {
     "id": "prop-001",
     "title": "Palm Jumeirah Signature Villa",
     "price": 18500000,
@@ -14,7 +116,18 @@
     "description": "An extraordinary beachfront villa on the iconic Palm Jumeirah, featuring panoramic Arabian Gulf views, a private infinity pool, and premium finishes throughout. This masterpiece of design offers unrivalled luxury with direct beach access and a private pier.",
     "is_featured": true,
     "is_verified": true,
-    "amenities": ["Private Pool", "Private Beach", "Home Cinema", "Smart Home", "Gym", "Sauna", "Maid's Room", "4-Car Garage", "Garden", "BBQ Area"],
+    "amenities": [
+      "Private Pool",
+      "Private Beach",
+      "Home Cinema",
+      "Smart Home",
+      "Gym",
+      "Sauna",
+      "Maid's Room",
+      "4-Car Garage",
+      "Garden",
+      "BBQ Area"
+    ],
     "created_at": "2024-03-15T10:00:00Z"
   },
   {
@@ -32,7 +145,18 @@
     "description": "A sky-high penthouse above the glittering skyline of Downtown Dubai. Floor-to-ceiling windows frame iconic Burj Khalifa and fountain views. Designed for the ultimate city lifestyle with a private rooftop terrace, chef's kitchen, and bespoke interiors.",
     "is_featured": true,
     "is_verified": true,
-    "amenities": ["Rooftop Terrace", "Burj Khalifa View", "Smart Home", "Concierge", "Valet Parking", "Gym", "Pool", "Walk-in Closet", "Study Room", "Wine Cellar"],
+    "amenities": [
+      "Rooftop Terrace",
+      "Burj Khalifa View",
+      "Smart Home",
+      "Concierge",
+      "Valet Parking",
+      "Gym",
+      "Pool",
+      "Walk-in Closet",
+      "Study Room",
+      "Wine Cellar"
+    ],
     "created_at": "2024-03-10T10:00:00Z"
   },
   {
@@ -50,7 +174,16 @@
     "description": "A beautifully appointed apartment in the heart of Dubai Marina with stunning marina views. Modern interiors, high-end appliances, and access to world-class amenities in one of Dubai's most sought-after addresses.",
     "is_featured": true,
     "is_verified": true,
-    "amenities": ["Marina View", "Pool", "Gym", "Concierge", "Covered Parking", "Balcony", "Central A/C", "Built-in Wardrobes"],
+    "amenities": [
+      "Marina View",
+      "Pool",
+      "Gym",
+      "Concierge",
+      "Covered Parking",
+      "Balcony",
+      "Central A/C",
+      "Built-in Wardrobes"
+    ],
     "created_at": "2024-03-05T10:00:00Z"
   },
   {
@@ -68,7 +201,18 @@
     "description": "One of Emirates Hills' finest estates, sitting on a vast plot overlooking the championship golf course. This extraordinary residence features a grand entry hall, formal reception rooms, multiple living areas, a home spa, and manicured grounds with a resort-style pool.",
     "is_featured": true,
     "is_verified": true,
-    "amenities": ["Golf Course View", "Private Pool", "Home Spa", "Gym", "Cinema Room", "Smart Home", "Staff Quarters", "8-Car Garage", "Garden", "Tennis Court"],
+    "amenities": [
+      "Golf Course View",
+      "Private Pool",
+      "Home Spa",
+      "Gym",
+      "Cinema Room",
+      "Smart Home",
+      "Staff Quarters",
+      "8-Car Garage",
+      "Garden",
+      "Tennis Court"
+    ],
     "created_at": "2024-02-20T10:00:00Z"
   },
   {
@@ -86,7 +230,15 @@
     "description": "A contemporary townhouse in the family-friendly community of JVC. Bright open-plan living spaces, a private garden, and a rooftop terrace make this ideal for young families. Minutes from top schools, retail and the Al Barsha Mall.",
     "is_featured": false,
     "is_verified": true,
-    "amenities": ["Private Garden", "Rooftop Terrace", "Covered Parking", "Kids Play Area", "Community Pool", "Gym", "Central A/C"],
+    "amenities": [
+      "Private Garden",
+      "Rooftop Terrace",
+      "Covered Parking",
+      "Kids Play Area",
+      "Community Pool",
+      "Gym",
+      "Central A/C"
+    ],
     "created_at": "2024-02-15T10:00:00Z"
   },
   {
@@ -104,7 +256,15 @@
     "description": "Grade A commercial space in the prestigious Business Bay district, featuring an open-plan layout, high-speed connectivity, floor-to-ceiling windows with canal views, and access to concierge, valet, and meeting facilities.",
     "is_featured": false,
     "is_verified": true,
-    "amenities": ["Canal View", "Dedicated Parking", "24/7 Security", "Concierge", "Meeting Rooms", "High-Speed Internet", "Central A/C"],
+    "amenities": [
+      "Canal View",
+      "Dedicated Parking",
+      "24/7 Security",
+      "Concierge",
+      "Meeting Rooms",
+      "High-Speed Internet",
+      "Central A/C"
+    ],
     "created_at": "2024-02-10T10:00:00Z"
   },
   {
@@ -122,7 +282,16 @@
     "description": "A spacious apartment steps from the beach in the vibrant JBR neighbourhood. Enjoy open sea views from the generous balcony. With chic interiors, modern kitchen, and access to beach facilities, this is the ultimate coastal lifestyle home.",
     "is_featured": false,
     "is_verified": true,
-    "amenities": ["Sea View", "Beach Access", "Pool", "Gym", "Balcony", "Concierge", "Covered Parking", "Central A/C"],
+    "amenities": [
+      "Sea View",
+      "Beach Access",
+      "Pool",
+      "Gym",
+      "Balcony",
+      "Concierge",
+      "Covered Parking",
+      "Central A/C"
+    ],
     "created_at": "2024-01-30T10:00:00Z"
   },
   {
@@ -140,7 +309,16 @@
     "description": "A beautiful family villa in the serene Arabian Ranches community, featuring a spacious layout, lush garden, private pool, and a welcoming atmosphere perfect for growing families. Community amenities include a golf course, equestrian centre, and top schools.",
     "is_featured": false,
     "is_verified": true,
-    "amenities": ["Private Pool", "Garden", "Maid's Room", "2-Car Garage", "Golf Course Access", "Security", "Kids Play Area", "Community Club"],
+    "amenities": [
+      "Private Pool",
+      "Garden",
+      "Maid's Room",
+      "2-Car Garage",
+      "Golf Course Access",
+      "Security",
+      "Kids Play Area",
+      "Community Club"
+    ],
     "created_at": "2024-01-25T10:00:00Z"
   },
   {
@@ -154,11 +332,19 @@
     "bedrooms": 1,
     "bathrooms": 1,
     "sqft": 950,
-    "image_url": "https://images.pexels.com/photos/1879052/pexels-photo-1879052.jpeg",
+    "image_url": "/uploads/41a1357b-6fe2-438a-a6f6-da4660f4e4aa.png",
     "description": "A sleek executive apartment in the prestigious Dubai International Financial Centre. Perfect for professionals, this fully furnished unit offers city views, premium appliances, and walking access to the best restaurants, galleries and corporate offices in Dubai.",
     "is_featured": false,
     "is_verified": true,
-    "amenities": ["City View", "Fully Furnished", "Gym", "Pool", "Concierge", "Valet Parking", "24/7 Security"],
+    "amenities": [
+      "City View",
+      "Fully Furnished",
+      "Gym",
+      "Pool",
+      "Concierge",
+      "Valet Parking",
+      "24/7 Security"
+    ],
     "created_at": "2024-01-20T10:00:00Z"
   },
   {
@@ -176,7 +362,16 @@
     "description": "A stunning penthouse at City Walk with a private rooftop pool and views of Jumeirah. Designed with meticulous attention to detail, this residence features designer interiors, a smart home system, and direct access to City Walk's retail and dining promenade.",
     "is_featured": true,
     "is_verified": true,
-    "amenities": ["Rooftop Pool", "Smart Home", "Terrace", "Concierge", "Valet Parking", "Walk-in Closet", "Designer Kitchen", "Private Lift"],
+    "amenities": [
+      "Rooftop Pool",
+      "Smart Home",
+      "Terrace",
+      "Concierge",
+      "Valet Parking",
+      "Walk-in Closet",
+      "Designer Kitchen",
+      "Private Lift"
+    ],
     "created_at": "2024-01-15T10:00:00Z"
   },
   {
@@ -194,7 +389,15 @@
     "description": "A premium townhouse in the exclusive Meydan Avenue development, featuring elegant architecture, private garden, and community amenities. Close to the Meydan Racecourse and Godolphin Gallery, ideal for those who appreciate Dubai's racing heritage.",
     "is_featured": false,
     "is_verified": true,
-    "amenities": ["Private Garden", "Community Pool", "Gym", "Covered Parking", "Central A/C", "BBQ Area", "Security"],
+    "amenities": [
+      "Private Garden",
+      "Community Pool",
+      "Gym",
+      "Covered Parking",
+      "Central A/C",
+      "BBQ Area",
+      "Security"
+    ],
     "created_at": "2024-01-10T10:00:00Z"
   },
   {
@@ -212,7 +415,15 @@
     "description": "A charming apartment in the forward-looking Dubai Creek Harbour development with views of the upcoming Dubai Creek Tower. Modern interiors, excellent connectivity and a thriving new community make this a compelling investment and lifestyle choice.",
     "is_featured": false,
     "is_verified": true,
-    "amenities": ["Creek View", "Pool", "Gym", "Balcony", "Covered Parking", "Retail Podium", "24/7 Security"],
+    "amenities": [
+      "Creek View",
+      "Pool",
+      "Gym",
+      "Balcony",
+      "Covered Parking",
+      "Retail Podium",
+      "24/7 Security"
+    ],
     "created_at": "2024-01-05T10:00:00Z"
   },
   {
@@ -230,7 +441,18 @@
     "description": "An exceptional beachfront villa on Abu Dhabi's premier cultural island, situated steps from the Louvre Abu Dhabi and pristine natural beaches. Designed by award-winning architects, this villa seamlessly blends indoor and outdoor luxury living.",
     "is_featured": true,
     "is_verified": true,
-    "amenities": ["Private Beach", "Infinity Pool", "Home Cinema", "Smart Home", "Gym", "Staff Quarters", "4-Car Garage", "Sea View", "Garden", "Sauna"],
+    "amenities": [
+      "Private Beach",
+      "Infinity Pool",
+      "Home Cinema",
+      "Smart Home",
+      "Gym",
+      "Staff Quarters",
+      "4-Car Garage",
+      "Sea View",
+      "Garden",
+      "Sauna"
+    ],
     "created_at": "2024-03-12T10:00:00Z"
   },
   {
@@ -248,7 +470,15 @@
     "description": "A modern apartment on the entertainment hub of Yas Island, minutes from Ferrari World, Yas Waterworld and the Yas Marina Circuit. Bright interiors with a generous balcony and views over the Island's lush landscape.",
     "is_featured": true,
     "is_verified": true,
-    "amenities": ["Balcony", "Pool", "Gym", "Covered Parking", "Central A/C", "Community Garden", "Security"],
+    "amenities": [
+      "Balcony",
+      "Pool",
+      "Gym",
+      "Covered Parking",
+      "Central A/C",
+      "Community Garden",
+      "Security"
+    ],
     "created_at": "2024-03-08T10:00:00Z"
   },
   {
@@ -266,7 +496,14 @@
     "description": "A contemporary apartment on Al Reem Island with a bright open plan layout, modern kitchen, and access to a full suite of building amenities. Ideal for professionals working in Abu Dhabi's growing financial district.",
     "is_featured": false,
     "is_verified": true,
-    "amenities": ["Pool", "Gym", "Balcony", "Covered Parking", "Central A/C", "Concierge"],
+    "amenities": [
+      "Pool",
+      "Gym",
+      "Balcony",
+      "Covered Parking",
+      "Central A/C",
+      "Concierge"
+    ],
     "created_at": "2024-02-28T10:00:00Z"
   },
   {
@@ -284,7 +521,18 @@
     "description": "A truly extraordinary penthouse atop one of Abu Dhabi's most prestigious Corniche towers. Commanding panoramic views of the Arabian Gulf, this residence is appointed with the finest materials and technology, setting a new standard for luxury in the capital.",
     "is_featured": true,
     "is_verified": true,
-    "amenities": ["Sea View", "Rooftop Terrace", "Smart Home", "Private Pool", "Concierge", "Valet Parking", "Home Cinema", "Wine Room", "Gym", "Sauna"],
+    "amenities": [
+      "Sea View",
+      "Rooftop Terrace",
+      "Smart Home",
+      "Private Pool",
+      "Concierge",
+      "Valet Parking",
+      "Home Cinema",
+      "Wine Room",
+      "Gym",
+      "Sauna"
+    ],
     "created_at": "2024-02-22T10:00:00Z"
   },
   {
@@ -302,7 +550,16 @@
     "description": "A spectacular villa in the garden city of Al Ain, offering a rare combination of spacious grounds, mountain backdrop, and modern amenities. Close to Al Ain Oasis, a UNESCO World Heritage Site, and excellent international schools.",
     "is_featured": false,
     "is_verified": true,
-    "amenities": ["Private Pool", "Large Garden", "Maid's Room", "2-Car Garage", "Mountain View", "BBQ Area", "Security", "Central A/C"],
+    "amenities": [
+      "Private Pool",
+      "Large Garden",
+      "Maid's Room",
+      "2-Car Garage",
+      "Mountain View",
+      "BBQ Area",
+      "Security",
+      "Central A/C"
+    ],
     "created_at": "2024-02-18T10:00:00Z"
   },
   {
@@ -320,7 +577,14 @@
     "description": "Premium Grade A office space in Abu Dhabi's global financial centre on Al Maryah Island. Offering commanding views of the city, the space is ideal for financial institutions, professional services firms, and multinational corporations.",
     "is_featured": false,
     "is_verified": true,
-    "amenities": ["City View", "24/7 Security", "Concierge", "Dedicated Parking", "Meeting Rooms", "Fiber Internet"],
+    "amenities": [
+      "City View",
+      "24/7 Security",
+      "Concierge",
+      "Dedicated Parking",
+      "Meeting Rooms",
+      "Fiber Internet"
+    ],
     "created_at": "2024-02-14T10:00:00Z"
   },
   {
@@ -338,7 +602,14 @@
     "description": "A graceful townhouse in the established Khalidiyah district, offering classic architecture with modern conveniences. Set in a quiet residential street with proximity to the Corniche, top restaurants, and the Abu Dhabi Mall.",
     "is_featured": false,
     "is_verified": true,
-    "amenities": ["Private Garden", "Covered Parking", "Central A/C", "Maid's Room", "Balcony", "Security"],
+    "amenities": [
+      "Private Garden",
+      "Covered Parking",
+      "Central A/C",
+      "Maid's Room",
+      "Balcony",
+      "Security"
+    ],
     "created_at": "2024-02-05T10:00:00Z"
   },
   {
@@ -356,7 +627,15 @@
     "description": "A thoughtfully designed apartment in Masdar City, the world's first planned sustainable urban community. With solar power, advanced smart home systems, and zero-waste infrastructure, this is the ideal home for eco-conscious professionals.",
     "is_featured": false,
     "is_verified": true,
-    "amenities": ["Smart Home", "Solar Power", "EV Charging", "Gym", "Pool", "Central A/C", "Bike Storage"],
+    "amenities": [
+      "Smart Home",
+      "Solar Power",
+      "EV Charging",
+      "Gym",
+      "Pool",
+      "Central A/C",
+      "Bike Storage"
+    ],
     "created_at": "2024-01-28T10:00:00Z"
   },
   {
@@ -374,7 +653,15 @@
     "description": "A spacious apartment on the picturesque Al Majaz waterfront with views of Khalid Lagoon and the iconic Sharjah Fountain. Generously sized rooms, a large balcony, and a family-friendly community make this exceptional value.",
     "is_featured": true,
     "is_verified": true,
-    "amenities": ["Lagoon View", "Balcony", "Covered Parking", "Kids Play Area", "Pool", "Gym", "Central A/C"],
+    "amenities": [
+      "Lagoon View",
+      "Balcony",
+      "Covered Parking",
+      "Kids Play Area",
+      "Pool",
+      "Gym",
+      "Central A/C"
+    ],
     "created_at": "2024-03-01T10:00:00Z"
   },
   {
@@ -392,7 +679,15 @@
     "description": "A grand villa in Muwaileh's premium residential district, close to the University of Sharjah and American University of Sharjah. Features a private pool, manicured gardens, and a layout designed for large families.",
     "is_featured": false,
     "is_verified": true,
-    "amenities": ["Private Pool", "Garden", "Maid's Room", "2-Car Garage", "BBQ Area", "Security", "Central A/C"],
+    "amenities": [
+      "Private Pool",
+      "Garden",
+      "Maid's Room",
+      "2-Car Garage",
+      "BBQ Area",
+      "Security",
+      "Central A/C"
+    ],
     "created_at": "2024-02-12T10:00:00Z"
   },
   {
@@ -410,7 +705,14 @@
     "description": "A well-appointed apartment on the Al Khan waterfront with beautiful sea views. Spacious rooms, a fully equipped kitchen, and easy access to Sharjah's beach make this a great rental option for families and professionals.",
     "is_featured": false,
     "is_verified": true,
-    "amenities": ["Sea View", "Covered Parking", "Balcony", "Central A/C", "Security", "Gym"],
+    "amenities": [
+      "Sea View",
+      "Covered Parking",
+      "Balcony",
+      "Central A/C",
+      "Security",
+      "Gym"
+    ],
     "created_at": "2024-01-22T10:00:00Z"
   },
   {
@@ -428,7 +730,14 @@
     "description": "A modern townhouse in the heart of University City, Sharjah's vibrant academic corridor. Perfect for families with students or academics, offering a peaceful residential setting close to multiple universities and educational facilities.",
     "is_featured": false,
     "is_verified": true,
-    "amenities": ["Private Garden", "Covered Parking", "Central A/C", "Community Pool", "Gym", "Kids Play Area"],
+    "amenities": [
+      "Private Garden",
+      "Covered Parking",
+      "Central A/C",
+      "Community Pool",
+      "Gym",
+      "Kids Play Area"
+    ],
     "created_at": "2024-01-18T10:00:00Z"
   },
   {
@@ -446,7 +755,14 @@
     "description": "An attractive seafront apartment on Ajman Corniche with unobstructed Arabian Gulf views. Featuring a spacious balcony for sunset dining, well-finished interiors, and excellent value for money in this charming coastal emirate.",
     "is_featured": true,
     "is_verified": true,
-    "amenities": ["Sea View", "Balcony", "Covered Parking", "Central A/C", "Security", "Pool"],
+    "amenities": [
+      "Sea View",
+      "Balcony",
+      "Covered Parking",
+      "Central A/C",
+      "Security",
+      "Pool"
+    ],
     "created_at": "2024-02-25T10:00:00Z"
   },
   {
@@ -464,7 +780,14 @@
     "description": "A spacious family villa in the popular Al Nuaimiya district of Ajman, offering generous living spaces, a private garden, and a calm residential environment. Commutable to both Sharjah and Dubai, making it an excellent family investment.",
     "is_featured": false,
     "is_verified": true,
-    "amenities": ["Private Garden", "Maid's Room", "2-Car Garage", "Central A/C", "Security", "BBQ Area"],
+    "amenities": [
+      "Private Garden",
+      "Maid's Room",
+      "2-Car Garage",
+      "Central A/C",
+      "Security",
+      "BBQ Area"
+    ],
     "created_at": "2024-02-08T10:00:00Z"
   },
   {
@@ -482,7 +805,13 @@
     "description": "A modern townhouse in Al Rashidiya offering three generous bedrooms, an open living and dining area, and a private courtyard. Excellent build quality and a convenient location within Ajman make this a smart purchase.",
     "is_featured": false,
     "is_verified": true,
-    "amenities": ["Private Courtyard", "Covered Parking", "Central A/C", "Security", "Community Garden"],
+    "amenities": [
+      "Private Courtyard",
+      "Covered Parking",
+      "Central A/C",
+      "Security",
+      "Community Garden"
+    ],
     "created_at": "2024-01-12T10:00:00Z"
   },
   {
@@ -500,7 +829,16 @@
     "description": "A magnificent villa overlooking the Al Hamra Golf Club and Arabian Gulf. Set within one of the UAE's most scenic resort communities, this home combines golf course frontage, beach access, and refined interiors at a compelling price point.",
     "is_featured": true,
     "is_verified": true,
-    "amenities": ["Golf Course View", "Private Pool", "Beach Access", "Maid's Room", "2-Car Garage", "Garden", "BBQ Area", "Security"],
+    "amenities": [
+      "Golf Course View",
+      "Private Pool",
+      "Beach Access",
+      "Maid's Room",
+      "2-Car Garage",
+      "Garden",
+      "BBQ Area",
+      "Security"
+    ],
     "created_at": "2024-02-22T10:00:00Z"
   },
   {
@@ -518,7 +856,15 @@
     "description": "A stylish apartment in the award-winning Mina Al Arab development, set amid mangrove reserves and pristine beaches. This is sustainable coastal living at its finest — combining natural beauty with premium residential amenities.",
     "is_featured": false,
     "is_verified": true,
-    "amenities": ["Mangrove View", "Beach Access", "Pool", "Gym", "Balcony", "Covered Parking", "Central A/C"],
+    "amenities": [
+      "Mangrove View",
+      "Beach Access",
+      "Pool",
+      "Gym",
+      "Balcony",
+      "Covered Parking",
+      "Central A/C"
+    ],
     "created_at": "2024-02-02T10:00:00Z"
   },
   {
@@ -536,7 +882,15 @@
     "description": "A beautifully crafted townhouse on Hayat Island, RAK's newest luxury destination. With a private garden, stunning sea views, and access to the island's resort facilities including the InterContinental, this is an unmissable lifestyle opportunity.",
     "is_featured": false,
     "is_verified": true,
-    "amenities": ["Sea View", "Private Garden", "Community Pool", "Gym", "Beach Access", "Covered Parking", "Security"],
+    "amenities": [
+      "Sea View",
+      "Private Garden",
+      "Community Pool",
+      "Gym",
+      "Beach Access",
+      "Covered Parking",
+      "Security"
+    ],
     "created_at": "2024-01-15T10:00:00Z"
   },
   {
@@ -554,7 +908,16 @@
     "description": "A rare beachfront villa on the east coast of the UAE, where the Hajar Mountains meet the Indian Ocean. Offering direct beach access, a private pool, and extraordinary natural scenery, this is a true retreat from city life.",
     "is_featured": true,
     "is_verified": true,
-    "amenities": ["Private Beach", "Private Pool", "Mountain View", "Sea View", "Garden", "Maid's Room", "2-Car Garage", "BBQ Area"],
+    "amenities": [
+      "Private Beach",
+      "Private Pool",
+      "Mountain View",
+      "Sea View",
+      "Garden",
+      "Maid's Room",
+      "2-Car Garage",
+      "BBQ Area"
+    ],
     "created_at": "2024-02-20T10:00:00Z"
   },
   {
@@ -572,7 +935,13 @@
     "description": "A well-positioned apartment in central Fujairah with views of the Gulf of Oman. Functional and comfortable, ideal for professionals or small families seeking the tranquil east-coast lifestyle at an affordable price.",
     "is_featured": false,
     "is_verified": true,
-    "amenities": ["Sea View", "Covered Parking", "Central A/C", "Security", "Balcony"],
+    "amenities": [
+      "Sea View",
+      "Covered Parking",
+      "Central A/C",
+      "Security",
+      "Balcony"
+    ],
     "created_at": "2024-01-20T10:00:00Z"
   },
   {
@@ -590,7 +959,16 @@
     "description": "A tranquil waterfront villa at the UAQ Marine Club, offering a private boat mooring, lagoon views, and a relaxed lifestyle far from the bustle of the big city. Ideal for boating enthusiasts and those seeking an authentic, unspoiled UAE experience.",
     "is_featured": true,
     "is_verified": true,
-    "amenities": ["Private Mooring", "Lagoon View", "Private Pool", "Garden", "Maid's Room", "2-Car Garage", "BBQ Area", "Security"],
+    "amenities": [
+      "Private Mooring",
+      "Lagoon View",
+      "Private Pool",
+      "Garden",
+      "Maid's Room",
+      "2-Car Garage",
+      "BBQ Area",
+      "Security"
+    ],
     "created_at": "2024-02-16T10:00:00Z"
   },
   {
@@ -608,7 +986,13 @@
     "description": "An affordable yet charming apartment in UAQ Marina with sea views and access to marine amenities. A hidden gem for buyers seeking waterfront living at a fraction of the cost of Dubai or Abu Dhabi.",
     "is_featured": false,
     "is_verified": false,
-    "amenities": ["Sea View", "Balcony", "Covered Parking", "Central A/C", "Security"],
+    "amenities": [
+      "Sea View",
+      "Balcony",
+      "Covered Parking",
+      "Central A/C",
+      "Security"
+    ],
     "created_at": "2024-01-08T10:00:00Z"
   },
   {
@@ -626,7 +1010,16 @@
     "description": "A spacious townhouse in Sharjah's master-planned Tilal City, one of the emirate's most ambitious developments. Featuring wide boulevards, parks, and retail, Tilal City sets a new benchmark for community living in Sharjah.",
     "is_featured": false,
     "is_verified": true,
-    "amenities": ["Private Garden", "Community Pool", "Gym", "Covered Parking", "Central A/C", "Parks", "Retail Access", "Security"],
+    "amenities": [
+      "Private Garden",
+      "Community Pool",
+      "Gym",
+      "Covered Parking",
+      "Central A/C",
+      "Parks",
+      "Retail Access",
+      "Security"
+    ],
     "created_at": "2024-01-02T10:00:00Z"
   }
 ]

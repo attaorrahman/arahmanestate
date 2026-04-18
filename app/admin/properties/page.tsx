@@ -94,7 +94,11 @@ export default function AdminPropertiesPage() {
                       <div className="flex items-center gap-3">
                         {property.image_url && (
                           <img
-                            src={`${property.image_url}?auto=compress&cs=tinysrgb&w=60&h=60&fit=crop`}
+                            src={
+                              property.image_url.includes('images.pexels.com')
+                                ? `${property.image_url}?auto=compress&cs=tinysrgb&w=60&h=60&fit=crop`
+                                : property.image_url
+                            }
                             alt=""
                             className="w-10 h-10 rounded-sm object-cover shrink-0"
                           />

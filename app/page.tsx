@@ -20,10 +20,10 @@ export default function Home() {
       <Navbar />
       <HeroSection />
       <SearchFilter />
-      <TrustedPartners />
       <FeaturedProperties />
       <EmiratesSection />
       <WhyChooseUs />
+      <TrustedPartners />
       <StatsCounter />
       <OurTeam />
       <Testimonials />

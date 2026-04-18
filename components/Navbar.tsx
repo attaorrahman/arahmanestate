@@ -2,19 +2,23 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Menu, X, Phone, ChevronDown } from 'lucide-react';
-
-const navLinks = [
-  { label: 'Properties', href: '/properties/dubai' },
-  { label: 'Emirates', href: '/#emirates' },
-  { label: 'Our Team', href: '/#team' },
-  { label: 'About', href: '/#about' },
-  { label: 'Contact', href: '/#contact' },
-];
+import { Menu, X, Phone, Globe } from 'lucide-react';
+import { useLanguage } from '@/lib/language-context';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { lang, toggle, t } = useLanguage();
+
+  const navLinks = [
+    { label: t('nav.home'), href: '/#hero' },
+    { label: t('nav.properties'), href: '/properties' },
+    { label: t('nav.transactions'), href: '/transactions' },
+    { label: t('nav.emirates'), href: '/#emirates' },
+    { label: t('nav.team'), href: '/#team' },
+    { label: t('nav.meeting'), href: '/schedule-meeting' },
+    { label: t('nav.contact'), href: '/#contact' },
+  ];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -24,66 +28,63 @@ export default function Navbar() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-400 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-400 bg-white border-b border-gray-100 ${
         scrolled
-          ? 'bg-[#0D0D0D]/97 backdrop-blur-md shadow-2xl py-3'
-          : 'bg-transparent py-5'
+          ? 'shadow-lg py-1.5'
+          : 'py-2'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 group">
+          <Link href="/" className="flex items-center group">
             <img
-              src="/logo.jpeg"
-              alt="BNH MasterKey logo"
-              className="w-12 h-12 sm:w-14 sm:h-14 shrink-0 object-contain"
+              src="/BNHLogo.jpg"
+              alt="BNH MasterKey Properties L.L.C"
+              className="h-10 sm:h-16 sm:w-40 shrink-0 object-contain"
             />
-
-            <div className="leading-tight">
-              <span className="font-display text-white text-base sm:text-lg font-bold tracking-[0.15em] block">
-                BNH <span className="text-gold">MASTERKEY</span>
-              </span>
-              <div className="flex items-center gap-2 mt-1.5">
-                <span className="h-px flex-1 bg-white/30" />
-                <span className="text-[9px] sm:text-[10px] text-gray-300 tracking-[0.3em] uppercase font-body leading-none whitespace-nowrap">
-                  Properties L.L.C
-                </span>
-                <span className="h-px flex-1 bg-white/30" />
-              </div>
-            </div>
           </Link>
 
           <nav className="hidden lg:flex items-center gap-8">
             {navLinks.map((link) => (
               <Link
-                key={link.label}
+                key={link.href}
                 href={link.href}
-                className="nav-link font-body text-sm font-medium text-gray-300 hover:text-gold transition-colors"
+                className="nav-link font-body text-sm font-medium text-gray-700 hover:text-[#C9A84C] transition-colors"
               >
                 {link.label}
               </Link>
             ))}
           </nav>
 
-          <div className="hidden lg:flex items-center gap-4">
-            <a
-              href="tel:+97145551234"
-              className="flex items-center gap-2 text-gray-300 hover:text-gold transition-colors text-sm font-body"
+          <div className="hidden lg:flex items-center gap-3">
+            {/* Language toggle */}
+            <button
+              onClick={toggle}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm border border-gray-200 hover:border-[#C9A84C] text-gray-700 hover:text-[#C9A84C] transition-colors text-sm font-body font-medium"
+              aria-label="Toggle language"
             >
-              <Phone size={14} className="text-gold" />
+              <Globe size={14} />
+              {lang === 'en' ? 'العربية' : 'English'}
+            </button>
+
+            <a
+              href="tel:+971557757123"
+              className="flex items-center gap-2 text-gray-700 hover:text-[#C9A84C] transition-colors text-sm font-body"
+            >
+              <Phone size={14} className="text-[#C9A84C]" />
               +971 55 775 7123
             </a>
             <Link
-              href="/#contact"
-              className="btn-gold px-5 py-2.5 rounded-sm text-sm font-body font-medium tracking-wide"
+              href="/admin/login"
+              className="btn-gold px-5 py-2 rounded-sm text-sm font-body font-medium tracking-wide"
             >
-              List Property
+              {t('nav.admin')}
             </Link>
           </div>
 
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="lg:hidden text-white p-2"
+            className="lg:hidden text-gray-900 p-2"
             aria-label="Toggle menu"
           >
             {mobileOpen ? <X size={22} /> : <Menu size={22} />}
@@ -92,29 +93,37 @@ export default function Navbar() {
       </div>
 
       {mobileOpen && (
-        <div className="lg:hidden bg-[#0D0D0D]/98 backdrop-blur-md border-t border-white/10 mt-2">
+        <div className="lg:hidden bg-white border-t border-gray-100 mt-2">
           <div className="max-w-7xl mx-auto px-4 py-6 flex flex-col gap-5">
             {navLinks.map((link) => (
               <Link
-                key={link.label}
+                key={link.href}
                 href={link.href}
-                className="font-body text-gray-300 hover:text-gold transition-colors text-base"
+                className="font-body text-gray-700 hover:text-[#C9A84C] transition-colors text-base"
                 onClick={() => setMobileOpen(false)}
               >
                 {link.label}
               </Link>
             ))}
-            <div className="pt-4 border-t border-white/10 flex flex-col gap-3">
-              <a href="tel:+971557757123" className="flex items-center gap-2 text-gray-300 text-sm font-body">
-                <Phone size={14} className="text-gold" />
+            <div className="pt-4 border-t border-gray-100 flex flex-col gap-3">
+              {/* Mobile language toggle */}
+              <button
+                onClick={toggle}
+                className="flex items-center gap-2 text-gray-700 hover:text-[#C9A84C] transition-colors text-sm font-body w-fit"
+              >
+                <Globe size={14} />
+                {lang === 'en' ? 'العربية — Switch to Arabic' : 'English — التبديل إلى الإنجليزية'}
+              </button>
+              <a href="tel:+971557757123" className="flex items-center gap-2 text-gray-700 text-sm font-body">
+                <Phone size={14} className="text-[#C9A84C]" />
                 +971 55 775 7123
               </a>
               <Link
-                href="/#contact"
+                href="/admin/login"
                 className="btn-gold px-5 py-2.5 rounded-sm text-sm font-body font-medium text-center"
                 onClick={() => setMobileOpen(false)}
               >
-                List Property
+                {t('nav.admin')}
               </Link>
             </div>
           </div>

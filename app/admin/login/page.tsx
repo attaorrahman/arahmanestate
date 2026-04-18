@@ -1,12 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Building2, Eye, EyeOff } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
 
 export default function AdminLoginPage() {
-  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -19,23 +16,19 @@ export default function AdminLoginPage() {
     setLoading(true);
 
     try {
-      const timeout = new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error('Request timed out. Check your connection.')), 10000)
-      );
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json().catch(() => ({}));
 
-      const authCall = supabase.auth.signInWithPassword({ email, password });
-      const { data, error: authError } = await Promise.race([authCall, timeout]) as Awaited<typeof authCall>;
-
-      if (authError) {
-        setError(authError.message || 'Invalid email or password.');
+      if (!res.ok) {
+        setError(data.error || 'Wrong credentials');
         return;
       }
 
-      if (data?.session) {
-        window.location.href = '/admin/dashboard';
-      } else {
-        setError('Login failed — check your credentials or confirm your email in Supabase.');
-      }
+      window.location.href = '/admin/dashboard';
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Something went wrong.');
     } finally {
@@ -48,11 +41,9 @@ export default function AdminLoginPage() {
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="flex items-center justify-center gap-3 mb-8">
-          <div className="w-10 h-10 bg-[#C9A84C] rounded-sm flex items-center justify-center">
-            <Building2 size={20} className="text-black" />
-          </div>
+          <img src="/BNHLogo.jpg" alt="BNH MasterKey" className="w-10 h-10 rounded-sm object-contain" />
           <div>
-            <p className="text-white font-display font-bold">LuxEstate</p>
+            <p className="text-white font-display font-bold">BNH <span className="text-[#C9A84C]">MasterKey</span></p>
             <p className="text-gray-500 text-xs">Admin Panel</p>
           </div>
         </div>
@@ -71,7 +62,7 @@ export default function AdminLoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@luxestate.ae"
+                placeholder="info@bnhmasterkey.ae"
                 className="w-full bg-white/5 border border-white/10 rounded-sm px-4 py-3 text-white placeholder-gray-600 text-sm focus:outline-none focus:border-[#C9A84C]/60 transition-colors"
               />
             </div>

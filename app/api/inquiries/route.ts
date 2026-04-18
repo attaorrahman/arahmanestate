@@ -20,7 +20,7 @@ async function sendNotificationEmail(inquiry: {
   phone?: string;
   message: string;
   source: string;
-}) {
+}): Promise<string> {
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
       <div style="background: #0D0D0D; padding: 24px; border-bottom: 3px solid #C9A84C;">
@@ -63,6 +63,8 @@ async function sendNotificationEmail(inquiry: {
     subject: `New Inquiry from ${inquiry.name}`,
     html,
   });
+
+  return 'sent';
 }
 
 interface StoredInquiry {
@@ -74,6 +76,7 @@ interface StoredInquiry {
   source: string;
   property_id?: string;
   created_at: string;
+  email_status?: string;
 }
 
 export async function GET() {
@@ -112,20 +115,36 @@ export async function POST(req: NextRequest) {
       source: body.source ?? 'contact_form',
       property_id: body.property_id,
       created_at: new Date().toISOString(),
+      email_status: 'pending',
     };
     inquiries.unshift(newInquiry);
     writeJSON('inquiries.json', inquiries);
 
-    // Send email notification in background — don't block response
+    // Send email — update status after attempt
     sendNotificationEmail({
       name: newInquiry.name,
       email: newInquiry.email,
       phone: newInquiry.phone,
       message: newInquiry.message,
       source: newInquiry.source,
-    }).catch((emailErr) => {
-      console.error('Failed to send notification email:', emailErr);
-    });
+    })
+      .then(() => {
+        const all = readJSON<StoredInquiry[]>('inquiries.json');
+        const target = all.find((i) => i.id === newInquiry.id);
+        if (target) {
+          target.email_status = 'sent';
+          writeJSON('inquiries.json', all);
+        }
+      })
+      .catch((emailErr) => {
+        console.error('Failed to send notification email:', emailErr);
+        const all = readJSON<StoredInquiry[]>('inquiries.json');
+        const target = all.find((i) => i.id === newInquiry.id);
+        if (target) {
+          target.email_status = `failed: ${emailErr instanceof Error ? emailErr.message : String(emailErr)}`;
+          writeJSON('inquiries.json', all);
+        }
+      });
 
     return NextResponse.json(newInquiry, { status: 201 });
   } catch (e: unknown) {

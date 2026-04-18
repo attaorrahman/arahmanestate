@@ -3,23 +3,15 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { Instagram, Linkedin, Twitter, Facebook, Phone, Mail, MapPin, ArrowRight, Send } from 'lucide-react';
+import { useLanguage } from '@/lib/language-context';
 
 const emirateLinks = [
-  { label: 'Dubai', href: '/properties/dubai' },
-  { label: 'Abu Dhabi', href: '/properties/abu-dhabi' },
-  { label: 'Sharjah', href: '/properties/sharjah' },
-  { label: 'Ajman', href: '/properties/ajman' },
-  { label: 'Ras Al Khaimah', href: '/properties/ras-al-khaimah' },
-  { label: 'Fujairah', href: '/properties/fujairah' },
-];
-
-const quickLinks = [
-  { label: 'Properties for Sale', href: '/properties/dubai?type=sale' },
-  { label: 'Properties for Rent', href: '/properties/dubai?type=rent' },
-  { label: 'Featured Properties', href: '/#featured' },
-  { label: 'Why Choose Us', href: '/#about' },
-  { label: 'Contact Agent', href: '/#contact' },
-  { label: 'List Your Property', href: '/#contact' },
+  { key: 'Dubai', href: '/properties/dubai' },
+  { key: 'Abu Dhabi', href: '/properties/abu-dhabi' },
+  { key: 'Sharjah', href: '/properties/sharjah' },
+  { key: 'Ajman', href: '/properties/ajman' },
+  { key: 'Ras Al Khaimah', href: '/properties/ras-al-khaimah' },
+  { key: 'Fujairah', href: '/properties/fujairah' },
 ];
 
 const socials = [
@@ -30,8 +22,18 @@ const socials = [
 ];
 
 export default function Footer() {
+  const { t, dir } = useLanguage();
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+
+  const quickLinks = [
+    { label: t('footer.for_sale'), href: '/properties/dubai?type=sale' },
+    { label: t('footer.for_rent'), href: '/properties/dubai?type=rent' },
+    { label: t('footer.featured'), href: '/#featured' },
+    { label: t('footer.why_us'), href: '/#about' },
+    { label: t('footer.contact_agent'), href: '/#contact' },
+    { label: t('footer.list_property'), href: '/#contact' },
+  ];
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,7 +42,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-[#080808] text-gray-400">
+    <footer className="bg-[#080808] text-gray-400" dir={dir}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="py-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
           <div className="lg:col-span-1">
@@ -57,15 +59,14 @@ export default function Footer() {
                 <div className="flex items-center gap-2 mt-1.5">
                   <span className="h-px flex-1 bg-white/25" />
                   <span className="text-[10px] text-gray-400 tracking-[0.3em] uppercase font-body leading-none whitespace-nowrap">
-                    Properties L.L.C
+                    {t('common.properties_llc')}
                   </span>
                   <span className="h-px flex-1 bg-white/25" />
                 </div>
               </div>
             </Link>
             <p className="font-body text-sm leading-relaxed mb-6 text-gray-500">
-              UAE premier luxury real estate platform. Connecting discerning buyers with
-              extraordinary properties across the Emirates since 2014.
+              {t('footer.description')}
             </p>
             <div className="flex gap-3">
               {socials.map(({ icon: Icon, label, href }) => (
@@ -83,17 +84,17 @@ export default function Footer() {
 
           <div>
             <h4 className="font-display text-white font-semibold text-base mb-5">
-              Browse by Emirate
+              {t('footer.browse_emirate')}
             </h4>
             <ul className="space-y-3">
               {emirateLinks.map((link) => (
-                <li key={link.label}>
+                <li key={link.key}>
                   <Link
                     href={link.href}
                     className="font-body text-sm text-gray-500 hover:text-[#C9A84C] transition-colors flex items-center gap-2 group"
                   >
                     <ArrowRight size={12} className="opacity-0 group-hover:opacity-100 text-[#C9A84C] transition-opacity -ml-3.5 group-hover:ml-0" />
-                    {link.label}
+                    {link.key}
                   </Link>
                 </li>
               ))}
@@ -102,7 +103,7 @@ export default function Footer() {
 
           <div>
             <h4 className="font-display text-white font-semibold text-base mb-5">
-              Quick Links
+              {t('footer.quick_links')}
             </h4>
             <ul className="space-y-3">
               {quickLinks.map((link) => (
@@ -120,7 +121,7 @@ export default function Footer() {
 
             <div className="mt-8 space-y-3">
               <h4 className="font-display text-white font-semibold text-base">
-                Contact Info
+                {t('footer.contact_info')}
               </h4>
               {[
                 { icon: Phone, text: '+971 55 775 7123' },
@@ -137,14 +138,14 @@ export default function Footer() {
 
           <div>
             <h4 className="font-display text-white font-semibold text-base mb-2">
-              Newsletter
+              {t('footer.newsletter')}
             </h4>
             <p className="font-body text-sm text-gray-500 mb-5">
-              Get exclusive property listings and UAE market insights delivered to your inbox.
+              {t('footer.newsletter_desc')}
             </p>
             {subscribed ? (
               <div className="bg-[#C9A84C]/10 border border-[#C9A84C]/20 rounded-sm p-4 text-sm font-body text-[#C9A84C]">
-                Thank you for subscribing!
+                {t('footer.subscribed')}
               </div>
             ) : (
               <form onSubmit={handleSubscribe} className="flex flex-col gap-3">
@@ -153,7 +154,7 @@ export default function Footer() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Your email address"
+                  placeholder={t('footer.email_placeholder')}
                   className="bg-white/5 border border-white/8 rounded-sm px-4 py-3 text-white text-sm font-body placeholder-gray-600 focus:outline-none focus:border-[#C9A84C]/50 transition-colors"
                 />
                 <button
@@ -161,7 +162,7 @@ export default function Footer() {
                   className="btn-gold flex items-center justify-center gap-2 py-3 rounded-sm font-body text-sm font-medium"
                 >
                   <Send size={14} />
-                  Subscribe
+                  {t('footer.subscribe')}
                 </button>
               </form>
             )}
@@ -170,16 +171,20 @@ export default function Footer() {
 
         <div className="border-t border-white/5 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="font-body text-xs text-gray-600">
-            &copy; {new Date().getFullYear()} LuxEstate UAE. All rights reserved.
+            &copy; {new Date().getFullYear()} {t('footer.copyright')}
           </p>
           <div className="flex gap-6">
-            {['Privacy Policy', 'Terms of Service', 'Cookie Policy'].map((item) => (
+            {[
+              { label: t('footer.privacy'), href: '#' },
+              { label: t('footer.terms'), href: '#' },
+              { label: t('footer.cookies'), href: '#' },
+            ].map((item) => (
               <Link
-                key={item}
-                href="#"
+                key={item.label}
+                href={item.href}
                 className="font-body text-xs text-gray-600 hover:text-[#C9A84C] transition-colors"
               >
-                {item}
+                {item.label}
               </Link>
             ))}
           </div>

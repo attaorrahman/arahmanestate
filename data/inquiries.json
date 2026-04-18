@@ -1,5 +1,44 @@
 [
   {
+    "id": "2f104e4b-67e5-407b-b991-4acaffe3395a",
+    "name": "Hamza Ghaffa",
+    "email": "wasigausaf@gmail.com",
+    "message": "I'm interested in \"luxury\"",
+    "source": "property_inquiry",
+    "property_id": "b16a2559-2474-4879-9d03-2fa6c4431d12",
+    "created_at": "2026-04-17T14:56:02.896Z",
+    "email_status": "sent"
+  },
+  {
+    "id": "7c2ced87-cb41-4665-b161-1b6c38897b9f",
+    "name": "Malik Atta Ur Rahman",
+    "email": "ar416.official@gmail.com",
+    "message": "I'm interested in \"Residential Flat in Sharjah\"",
+    "source": "property_inquiry",
+    "property_id": "a3f3c3d8-28a4-4441-a3ba-ce94ef955588",
+    "created_at": "2026-04-17T10:22:04.720Z",
+    "email_status": "sent"
+  },
+  {
+    "id": "afdc09a6-37ed-489a-b70c-66f6801e4301",
+    "name": "billal Test",
+    "email": "bilaltest@gmail.com",
+    "phone": "1234567890",
+    "message": "again testing",
+    "source": "contact_form",
+    "created_at": "2026-04-17T02:33:48.308Z",
+    "email_status": "sent"
+  },
+  {
+    "id": "79a4e60a-060d-4111-8d56-865c2872b1a1",
+    "name": "atta test",
+    "email": "iamtest@gmail.com",
+    "phone": "+971 55 978 9879",
+    "message": "in this i am testing do i recieve the mail at my orignal mail or not and check either inquiry is saved in iinquiry section or not \n",
+    "source": "contact_form",
+    "created_at": "2026-04-17T02:24:13.963Z"
+  },
+  {
     "id": "f7a0734d-02b8-434c-a3ce-f604e2b0ed0b",
     "name": "attaTest",
     "email": "malikattaurahman@gmail.com",

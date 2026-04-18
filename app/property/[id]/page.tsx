@@ -4,12 +4,16 @@ export const dynamic = 'force-dynamic';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Bed, Bath, Square, MapPin, CircleCheck as CheckCircle2, ArrowLeft, Phone, Mail, Heart, Share2, Star, Building2 } from 'lucide-react';
+import nextDynamic from 'next/dynamic';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { getPropertyById, getEmirateBySlug, getDefaultAgent } from '@/lib/queries';
 import { formatPrice } from '@/lib/utils';
 import PropertyContactForm from './PropertyContactForm';
 import BookViewingForm from './BookViewingForm';
+import ImageGallery from './ImageGallery';
+
+const PropertyMap = nextDynamic(() => import('@/components/PropertyMap'), { ssr: false });
 
 interface Props {
   params: { id: string };
@@ -33,13 +37,6 @@ export default async function PropertyPage({ params }: Props) {
     getDefaultAgent().catch(() => null),
   ]);
 
-  const relatedImages = [
-    property.image_url,
-    'https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg',
-    'https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg',
-    'https://images.pexels.com/photos/2462015/pexels-photo-2462015.jpeg',
-  ].filter(Boolean);
-
   return (
     <main>
       <Navbar />
@@ -58,26 +55,13 @@ export default async function PropertyPage({ params }: Props) {
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 h-[420px] sm:h-[520px]">
-            <div className="lg:col-span-8 rounded-sm overflow-hidden image-zoom h-full">
-              <img
-                src={`${relatedImages[0]}?auto=compress&cs=tinysrgb&w=900&q=80`}
-                alt={property.title}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="hidden lg:grid lg:col-span-4 grid-rows-2 gap-4 h-full">
-              {relatedImages.slice(1, 3).map((img, i) => (
-                <div key={i} className="rounded-sm overflow-hidden image-zoom">
-                  <img
-                    src={`${img}?auto=compress&cs=tinysrgb&w=500&q=70`}
-                    alt={`Property view ${i + 2}`}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
+          {property.image_url && (
+            <ImageGallery
+              mainImage={property.image_url}
+              images={property.images || []}
+              title={property.title}
+            />
+          )}
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
@@ -176,7 +160,7 @@ export default async function PropertyPage({ params }: Props) {
               </div>
 
               {property.amenities && property.amenities.length > 0 && (
-                <div className="bg-white rounded-sm border border-gray-100 p-8 luxury-shadow">
+                <div className="bg-white rounded-sm border border-gray-100 p-8 luxury-shadow mb-6">
                   <h2 className="font-display text-2xl font-bold text-gray-900 mb-4">
                     Amenities & Features
                   </h2>
@@ -190,6 +174,15 @@ export default async function PropertyPage({ params }: Props) {
                     ))}
                   </div>
                 </div>
+              )}
+
+              {property.latitude && property.longitude && (
+                <PropertyMap
+                  latitude={property.latitude}
+                  longitude={property.longitude}
+                  title={property.title}
+                  location={`${property.location}${emirate ? `, ${emirate.name}` : ''}`}
+                />
               )}
             </div>
 

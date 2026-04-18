@@ -5,6 +5,7 @@ import { SlidersHorizontal, Grid3x3 as Grid3X3, List, ChevronDown } from 'lucide
 import PropertyCard from '@/components/PropertyCard';
 import PropertyCardSkeleton from '@/components/PropertyCardSkeleton';
 import type { Property, Emirate } from '@/lib/types';
+import { useLanguage } from '@/lib/language-context';
 
 const PAGE_SIZE = 6;
 
@@ -42,6 +43,7 @@ function applyFiltersToList(list: Property[], filters: Filters): Property[] {
 }
 
 export default function EmiratePropertiesClient({ emirate, initialProperties, slug }: Props) {
+  const { t, dir } = useLanguage();
   const [filters, setFilters] = useState<Filters>({
     priceType: 'all',
     propertyType: 'all',
@@ -71,14 +73,16 @@ export default function EmiratePropertiesClient({ emirate, initialProperties, sl
   const visibleProps = properties.slice(0, displayed);
   const hasMore = displayed < properties.length;
 
+  const selectClass = 'appearance-none bg-gray-50 border border-gray-200 rounded-sm pl-3 pr-8 py-2 text-sm font-body text-gray-700 focus:outline-none focus:border-[#C9A84C] cursor-pointer';
+
   return (
-    <section className="py-12 bg-[#FAFAF8] min-h-[60vh]">
+    <section className="py-12 bg-[#FAFAF8] min-h-[60vh]" dir={dir}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 p-5 bg-white rounded-sm border border-gray-100 luxury-shadow">
           <div className="flex items-center gap-2">
             <SlidersHorizontal size={16} className="text-[#C9A84C]" />
             <span className="font-body text-sm text-gray-600 font-medium">
-              {properties.length} Properties found
+              {properties.length} {t('props.found')}
             </span>
           </div>
 
@@ -87,11 +91,11 @@ export default function EmiratePropertiesClient({ emirate, initialProperties, sl
               <select
                 value={filters.priceType}
                 onChange={(e) => updateFilter('priceType', e.target.value)}
-                className="appearance-none bg-gray-50 border border-gray-200 rounded-sm pl-3 pr-8 py-2 text-sm font-body text-gray-700 focus:outline-none focus:border-[#C9A84C] cursor-pointer"
+                className={selectClass}
               >
-                <option value="all">Buy & Rent</option>
-                <option value="sale">For Sale</option>
-                <option value="rent">For Rent</option>
+                <option value="all">{t('props.buy_rent')}</option>
+                <option value="sale">{t('props.for_sale')}</option>
+                <option value="rent">{t('props.for_rent')}</option>
               </select>
               <ChevronDown size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
             </div>
@@ -100,14 +104,14 @@ export default function EmiratePropertiesClient({ emirate, initialProperties, sl
               <select
                 value={filters.propertyType}
                 onChange={(e) => updateFilter('propertyType', e.target.value)}
-                className="appearance-none bg-gray-50 border border-gray-200 rounded-sm pl-3 pr-8 py-2 text-sm font-body text-gray-700 focus:outline-none focus:border-[#C9A84C] cursor-pointer"
+                className={selectClass}
               >
-                <option value="all">All Types</option>
-                <option value="apartment">Apartment</option>
-                <option value="villa">Villa</option>
-                <option value="penthouse">Penthouse</option>
-                <option value="townhouse">Townhouse</option>
-                <option value="commercial">Commercial</option>
+                <option value="all">{t('props.all_types')}</option>
+                <option value="apartment">{t('props.apartment')}</option>
+                <option value="villa">{t('props.villa')}</option>
+                <option value="penthouse">{t('props.penthouse')}</option>
+                <option value="townhouse">{t('props.townhouse')}</option>
+                <option value="commercial">{t('props.commercial')}</option>
               </select>
               <ChevronDown size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
             </div>
@@ -116,11 +120,11 @@ export default function EmiratePropertiesClient({ emirate, initialProperties, sl
               <select
                 value={filters.sort}
                 onChange={(e) => updateFilter('sort', e.target.value)}
-                className="appearance-none bg-gray-50 border border-gray-200 rounded-sm pl-3 pr-8 py-2 text-sm font-body text-gray-700 focus:outline-none focus:border-[#C9A84C] cursor-pointer"
+                className={selectClass}
               >
-                <option value="featured">Featured First</option>
-                <option value="price-asc">Price: Low to High</option>
-                <option value="price-desc">Price: High to Low</option>
+                <option value="featured">{t('props.featured_first')}</option>
+                <option value="price-asc">{t('props.price_low_high')}</option>
+                <option value="price-desc">{t('props.price_high_low')}</option>
               </select>
               <ChevronDown size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
             </div>
@@ -153,8 +157,8 @@ export default function EmiratePropertiesClient({ emirate, initialProperties, sl
             <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
               <SlidersHorizontal size={24} className="text-gray-400" />
             </div>
-            <h3 className="font-display text-xl text-gray-700 font-semibold mb-2">No properties found</h3>
-            <p className="font-body text-gray-400 text-sm">Try adjusting your filters to see more results.</p>
+            <h3 className="font-display text-xl text-gray-700 font-semibold mb-2">{t('props.no_properties')}</h3>
+            <p className="font-body text-gray-400 text-sm">{t('props.adjust_filters')}</p>
           </div>
         ) : (
           <>
@@ -182,11 +186,11 @@ export default function EmiratePropertiesClient({ emirate, initialProperties, sl
                   onClick={() => setDisplayed((d) => d + PAGE_SIZE)}
                   className="inline-flex items-center gap-2.5 border border-[#C9A84C] text-[#C9A84C] hover:bg-[#C9A84C] hover:text-white transition-all duration-200 px-8 py-3.5 rounded-sm font-body text-sm font-medium"
                 >
-                  Load More Properties
+                  {t('props.load_more')}
                   <ChevronDown size={15} />
                 </button>
                 <p className="font-body text-gray-400 text-xs mt-3">
-                  Showing {Math.min(displayed, properties.length)} of {properties.length} properties
+                  {t('props.showing')} {Math.min(displayed, properties.length)} {t('props.of')} {properties.length} {t('props.properties')}
                 </p>
               </div>
             )}
