@@ -1,11 +1,12 @@
-import { readJSON } from '@/lib/data';
+import { supabaseServer } from '@/lib/supabase-server';
 import type { Partner } from '@/lib/types';
 import TrustedPartnersHeader from './TrustedPartnersHeader';
 
 export default async function TrustedPartners() {
   let partners: Partner[] = [];
   try {
-    partners = readJSON<Partner[]>('partners.json');
+    const { data } = await supabaseServer.from('partners').select('*').order('created_at');
+    partners = (data ?? []) as Partner[];
   } catch {
     partners = [];
   }

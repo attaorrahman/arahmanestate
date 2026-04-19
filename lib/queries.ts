@@ -1,37 +1,35 @@
-// SERVER ONLY — reads from local JSON files via lib/data.ts (uses Node fs).
+// SERVER ONLY — reads from Supabase.
 // Do NOT import this file from client components.
-import { readJSON } from './data';
+import { supabaseServer } from './supabase-server';
 import type { Property, Emirate, Agent } from './types';
 
 export async function getEmiratesWithCounts(): Promise<Emirate[]> {
-  const emirates = readJSON<Emirate[]>('emirates.json');
-  const properties = readJSON<Property[]>('properties.json');
-  return emirates
-    .map((e) => ({
+  const { data: emirates } = await supabaseServer.from('emirates').select('*').order('name');
+  const { data: properties } = await supabaseServer.from('properties').select('emirate_slug');
+  const props = properties ?? [];
+  return (emirates ?? [])
+    .map((e: Emirate) => ({
       ...e,
-      property_count: properties.filter((p) => p.emirate_slug === e.slug).length,
+      property_count: props.filter((p: { emirate_slug: string }) => p.emirate_slug === e.slug).length,
     }))
-    .sort((a, b) => a.name.localeCompare(b.name));
+    .sort((a: Emirate, b: Emirate) => a.name.localeCompare(b.name));
 }
 
 export async function getEmirateBySlug(slug: string): Promise<Emirate | null> {
-  const emirates = readJSON<Emirate[]>('emirates.json');
-  const properties = readJSON<Property[]>('properties.json');
-  const emirate = emirates.find((e) => e.slug === slug) ?? null;
+  const { data: emirate } = await supabaseServer.from('emirates').select('*').eq('slug', slug).single();
   if (!emirate) return null;
-  return {
-    ...emirate,
-    property_count: properties.filter((p) => p.emirate_slug === slug).length,
-  };
+  const { count } = await supabaseServer.from('properties').select('*', { count: 'exact', head: true }).eq('emirate_slug', slug);
+  return { ...emirate, property_count: count ?? 0 } as Emirate;
 }
 
 export async function getFeaturedProperties(): Promise<Property[]> {
-  const properties = readJSON<Property[]>('properties.json');
-  const featured = properties
-    .filter((p) => p.is_featured)
-    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  const { data } = await supabaseServer
+    .from('properties')
+    .select('*')
+    .eq('is_featured', true)
+    .order('created_at', { ascending: false });
+  const featured = (data ?? []) as Property[];
 
-  // Newest featured always leads, then diversify by emirate, then extras.
   if (featured.length === 0) return [];
   const [newest, ...rest] = featured;
 
@@ -61,36 +59,36 @@ export async function getPropertiesByEmirate(
     bedrooms?: number;
   }
 ): Promise<Property[]> {
-  const properties = readJSON<Property[]>('properties.json');
-  let result = properties.filter((p) => p.emirate_slug === emirateSlug);
+  let query = supabaseServer.from('properties').select('*').eq('emirate_slug', emirateSlug);
 
   if (filters?.priceType && filters.priceType !== 'all') {
-    result = result.filter((p) => p.price_type === filters.priceType);
+    query = query.eq('price_type', filters.priceType);
   }
   if (filters?.propertyType && filters.propertyType !== 'all') {
-    result = result.filter((p) => p.property_type === filters.propertyType);
+    query = query.eq('property_type', filters.propertyType);
   }
   if (filters?.minPrice) {
-    result = result.filter((p) => p.price >= filters.minPrice!);
+    query = query.gte('price', filters.minPrice);
   }
   if (filters?.maxPrice) {
-    result = result.filter((p) => p.price <= filters.maxPrice!);
+    query = query.lte('price', filters.maxPrice);
   }
   if (filters?.bedrooms) {
-    result = result.filter((p) => p.bedrooms !== null && p.bedrooms >= filters.bedrooms!);
+    query = query.gte('bedrooms', filters.bedrooms);
   }
 
-  return result.sort((a, b) => (b.is_featured ? 1 : 0) - (a.is_featured ? 1 : 0));
+  const { data } = await query.order('is_featured', { ascending: false });
+  return (data ?? []) as Property[];
 }
 
 export async function getAllProperties(): Promise<Property[]> {
-  const properties = readJSON<Property[]>('properties.json');
-  return properties.sort((a, b) => (b.is_featured ? 1 : 0) - (a.is_featured ? 1 : 0));
+  const { data } = await supabaseServer.from('properties').select('*').order('is_featured', { ascending: false });
+  return (data ?? []) as Property[];
 }
 
 export async function getPropertyById(id: string): Promise<Property | null> {
-  const properties = readJSON<Property[]>('properties.json');
-  return properties.find((p) => p.id === id) ?? null;
+  const { data } = await supabaseServer.from('properties').select('*').eq('id', id).single();
+  return (data as Property) ?? null;
 }
 
 export async function searchProperties(params: {
@@ -101,36 +99,32 @@ export async function searchProperties(params: {
   maxPrice?: number;
   bedrooms?: string;
 }): Promise<Property[]> {
-  const properties = readJSON<Property[]>('properties.json');
-  let result = [...properties];
+  let query = supabaseServer.from('properties').select('*');
 
   if (params.listingType && params.listingType !== 'all') {
-    result = result.filter((p) => p.price_type === params.listingType);
+    query = query.eq('price_type', params.listingType);
   }
   if (params.propertyType && params.propertyType !== 'all') {
-    result = result.filter((p) => p.property_type === params.propertyType);
+    query = query.eq('property_type', params.propertyType);
   }
   if (params.emirateSlug && params.emirateSlug !== 'all') {
-    result = result.filter((p) => p.emirate_slug === params.emirateSlug);
+    query = query.eq('emirate_slug', params.emirateSlug);
   }
   if (params.minPrice) {
-    result = result.filter((p) => p.price >= params.minPrice!);
+    query = query.gte('price', params.minPrice);
   }
   if (params.maxPrice) {
-    result = result.filter((p) => p.price <= params.maxPrice!);
+    query = query.lte('price', params.maxPrice);
   }
   if (params.bedrooms && params.bedrooms !== 'any') {
-    result = result.filter(
-      (p) => p.bedrooms !== null && p.bedrooms >= parseInt(params.bedrooms!)
-    );
+    query = query.gte('bedrooms', parseInt(params.bedrooms));
   }
 
-  return result
-    .sort((a, b) => (b.is_featured ? 1 : 0) - (a.is_featured ? 1 : 0))
-    .slice(0, 50);
+  const { data } = await query.order('is_featured', { ascending: false }).limit(50);
+  return (data ?? []) as Property[];
 }
 
 export async function getDefaultAgent(): Promise<Agent | null> {
-  const agents = readJSON<Agent[]>('agents.json');
-  return agents[0] ?? null;
+  const { data } = await supabaseServer.from('agents').select('*').limit(1).single();
+  return (data as Agent) ?? null;
 }

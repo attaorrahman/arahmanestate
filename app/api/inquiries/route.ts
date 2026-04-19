@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { randomUUID } from 'crypto';
 import nodemailer from 'nodemailer';
-import { readJSON, writeJSON } from '@/lib/data';
-import type { Property } from '@/lib/types';
+import { supabaseServer } from '@/lib/supabase-server';
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || 'mail.bnhmasterkey.ae',
@@ -67,34 +65,36 @@ async function sendNotificationEmail(inquiry: {
   return 'sent';
 }
 
-interface StoredInquiry {
-  id: string;
-  name: string;
-  email: string;
-  phone?: string;
-  message: string;
-  source: string;
-  property_id?: string;
-  created_at: string;
-  email_status?: string;
-}
-
 export async function GET() {
   try {
-    const inquiries = readJSON<StoredInquiry[]>('inquiries.json');
-    const properties = readJSON<Property[]>('properties.json');
+    const { data: inquiries, error } = await supabaseServer
+      .from('inquiries')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (error) throw new Error(error.message);
 
-    const result = inquiries.map((inq) => {
-      const prop = inq.property_id
-        ? properties.find((p) => p.id === inq.property_id)
-        : null;
-      return {
-        ...inq,
-        phone: inq.phone ?? null,
-        property_id: inq.property_id ?? null,
-        properties: prop ? { title: prop.title } : null,
-      };
-    });
+    // Fetch property titles for inquiries that have a property_id
+    const propertyIds = (inquiries ?? [])
+      .map((i) => i.property_id)
+      .filter(Boolean);
+
+    let propertiesMap: Record<string, string> = {};
+    if (propertyIds.length > 0) {
+      const { data: properties } = await supabaseServer
+        .from('properties')
+        .select('id, title')
+        .in('id', propertyIds);
+      propertiesMap = Object.fromEntries((properties ?? []).map((p) => [p.id, p.title]));
+    }
+
+    const result = (inquiries ?? []).map((inq) => ({
+      ...inq,
+      phone: inq.phone ?? null,
+      property_id: inq.property_id ?? null,
+      properties: inq.property_id && propertiesMap[inq.property_id]
+        ? { title: propertiesMap[inq.property_id] }
+        : null,
+    }));
 
     return NextResponse.json(result);
   } catch {
@@ -105,22 +105,22 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const inquiries = readJSON<StoredInquiry[]>('inquiries.json');
-    const newInquiry: StoredInquiry = {
-      id: randomUUID(),
-      name: body.name,
-      email: body.email,
-      phone: body.phone,
-      message: body.message,
-      source: body.source ?? 'contact_form',
-      property_id: body.property_id,
-      created_at: new Date().toISOString(),
-      email_status: 'pending',
-    };
-    inquiries.unshift(newInquiry);
-    writeJSON('inquiries.json', inquiries);
+    const { data: newInquiry, error } = await supabaseServer
+      .from('inquiries')
+      .insert({
+        name: body.name,
+        email: body.email,
+        phone: body.phone || null,
+        message: body.message,
+        source: body.source ?? 'contact_form',
+        property_id: body.property_id || null,
+        email_status: 'pending',
+      })
+      .select()
+      .single();
+    if (error) throw new Error(error.message);
 
-    // Send email — update status after attempt
+    // Send email in background — update status after attempt
     sendNotificationEmail({
       name: newInquiry.name,
       email: newInquiry.email,
@@ -129,21 +129,12 @@ export async function POST(req: NextRequest) {
       source: newInquiry.source,
     })
       .then(() => {
-        const all = readJSON<StoredInquiry[]>('inquiries.json');
-        const target = all.find((i) => i.id === newInquiry.id);
-        if (target) {
-          target.email_status = 'sent';
-          writeJSON('inquiries.json', all);
-        }
+        supabaseServer.from('inquiries').update({ email_status: 'sent' }).eq('id', newInquiry.id).then(() => {});
       })
       .catch((emailErr) => {
         console.error('Failed to send notification email:', emailErr);
-        const all = readJSON<StoredInquiry[]>('inquiries.json');
-        const target = all.find((i) => i.id === newInquiry.id);
-        if (target) {
-          target.email_status = `failed: ${emailErr instanceof Error ? emailErr.message : String(emailErr)}`;
-          writeJSON('inquiries.json', all);
-        }
+        const status = `failed: ${emailErr instanceof Error ? emailErr.message : String(emailErr)}`;
+        supabaseServer.from('inquiries').update({ email_status: status }).eq('id', newInquiry.id).then(() => {});
       });
 
     return NextResponse.json(newInquiry, { status: 201 });

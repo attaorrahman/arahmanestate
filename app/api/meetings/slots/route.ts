@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { readJSON } from '@/lib/data';
+import { supabaseServer } from '@/lib/supabase-server';
 import { isValidDate } from '@/lib/meeting-slots';
-import type { Meeting } from '@/lib/types';
 
 export async function GET(req: NextRequest) {
   const date = req.nextUrl.searchParams.get('date');
@@ -9,8 +8,12 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Valid date (YYYY-MM-DD) is required' }, { status: 400 });
   }
   try {
-    const meetings = readJSON<Meeting[]>('meetings.json');
-    const booked = meetings.filter((m) => m.date === date).map((m) => m.time);
+    const { data, error } = await supabaseServer
+      .from('meetings')
+      .select('time')
+      .eq('date', date);
+    if (error) throw new Error(error.message);
+    const booked = (data ?? []).map((m) => m.time);
     return NextResponse.json({ date, booked }, {
       headers: { 'Cache-Control': 'no-store' },
     });

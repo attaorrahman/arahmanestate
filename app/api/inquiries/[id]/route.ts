@@ -1,19 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { readJSON, writeJSON } from '@/lib/data';
+import { supabaseServer } from '@/lib/supabase-server';
 import { SESSION_COOKIE, verifySessionToken } from '@/lib/admin-auth';
-import type { Property } from '@/lib/types';
-
-interface StoredInquiry {
-  id: string;
-  name: string;
-  email: string;
-  phone?: string;
-  message: string;
-  source: string;
-  property_id?: string;
-  created_at: string;
-  email_status?: string;
-}
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   const token = req.cookies.get(SESSION_COOKIE)?.value;
@@ -21,15 +8,25 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
   try {
-    const inquiries = readJSON<StoredInquiry[]>('inquiries.json');
-    const properties = readJSON<Property[]>('properties.json');
-    const inq = inquiries.find((i) => i.id === params.id);
-    if (!inq) {
+    const { data: inq, error } = await supabaseServer
+      .from('inquiries')
+      .select('*')
+      .eq('id', params.id)
+      .single();
+    if (error || !inq) {
       return NextResponse.json({ error: 'Inquiry not found' }, { status: 404 });
     }
-    const prop = inq.property_id
-      ? properties.find((p) => p.id === inq.property_id) ?? null
-      : null;
+
+    let prop = null;
+    if (inq.property_id) {
+      const { data } = await supabaseServer
+        .from('properties')
+        .select('id, title, location')
+        .eq('id', inq.property_id)
+        .single();
+      prop = data;
+    }
+
     return NextResponse.json({
       ...inq,
       phone: inq.phone ?? null,
@@ -48,12 +45,8 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
   try {
-    const inquiries = readJSON<StoredInquiry[]>('inquiries.json');
-    const next = inquiries.filter((i) => i.id !== params.id);
-    if (next.length === inquiries.length) {
-      return NextResponse.json({ error: 'Inquiry not found' }, { status: 404 });
-    }
-    writeJSON('inquiries.json', next);
+    const { error } = await supabaseServer.from('inquiries').delete().eq('id', params.id);
+    if (error) throw new Error(error.message);
     return NextResponse.json({ ok: true });
   } catch {
     return NextResponse.json({ error: 'Failed to delete inquiry' }, { status: 500 });

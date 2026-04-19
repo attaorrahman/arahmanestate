@@ -37,11 +37,28 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: `Storage error: ${error.message}` }, { status: 500 });
     }
 
+    // Try public URL first
     const { data: publicUrlData } = supabaseServer.storage
       .from(BUCKET)
       .getPublicUrl(filename);
 
-    return NextResponse.json({ url: publicUrlData.publicUrl }, { status: 201 });
+    // Verify the public URL is accessible; if not, create a signed URL
+    let finalUrl = publicUrlData.publicUrl;
+    try {
+      const check = await fetch(finalUrl, { method: 'HEAD' });
+      if (!check.ok) {
+        const { data: signedData, error: signedError } = await supabaseServer.storage
+          .from(BUCKET)
+          .createSignedUrl(filename, 60 * 60 * 24 * 365); // 1 year
+        if (!signedError && signedData?.signedUrl) {
+          finalUrl = signedData.signedUrl;
+        }
+      }
+    } catch {
+      // Public URL check failed, use it anyway
+    }
+
+    return NextResponse.json({ url: finalUrl }, { status: 201 });
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : 'Upload failed';
     console.error('Upload route error:', msg);

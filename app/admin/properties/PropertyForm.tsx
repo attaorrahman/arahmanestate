@@ -89,8 +89,15 @@ export default function PropertyForm({ property }: { property?: Property }) {
     const fd = new FormData();
     fd.append('file', file);
     const res = await fetch('/api/upload', { method: 'POST', body: fd });
-    const data = await res.json();
+    const text = await res.text();
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      throw new Error(`Server returned invalid response: ${text.slice(0, 200)}`);
+    }
     if (!res.ok) throw new Error(data.error || 'Upload failed');
+    if (!data.url) throw new Error('Upload succeeded but no URL was returned');
     return data.url;
   };
 
