@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { randomUUID } from 'crypto';
-import { supabase } from '@/lib/supabase';
+import { supabaseServer } from '@/lib/supabase-server';
 
 const MAX_SIZE = 8 * 1024 * 1024; // 8MB
 const ALLOWED = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
     if (!ALLOWED.includes(file.type)) {
-      return NextResponse.json({ error: 'Unsupported file type' }, { status: 400 });
+      return NextResponse.json({ error: `Unsupported file type: ${file.type}` }, { status: 400 });
     }
     if (file.size > MAX_SIZE) {
       return NextResponse.json({ error: 'File too large (max 8MB)' }, { status: 400 });
@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
     const filename = `${randomUUID()}.${ext || 'jpg'}`;
     const buffer = Buffer.from(await file.arrayBuffer());
 
-    const { error } = await supabase.storage
+    const { error } = await supabaseServer.storage
       .from(BUCKET)
       .upload(filename, buffer, {
         contentType: file.type,
@@ -33,16 +33,18 @@ export async function POST(req: NextRequest) {
       });
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      console.error('Supabase upload error:', error);
+      return NextResponse.json({ error: `Storage error: ${error.message}` }, { status: 500 });
     }
 
-    const { data: publicUrlData } = supabase.storage
+    const { data: publicUrlData } = supabaseServer.storage
       .from(BUCKET)
       .getPublicUrl(filename);
 
     return NextResponse.json({ url: publicUrlData.publicUrl }, { status: 201 });
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : 'Upload failed';
+    console.error('Upload route error:', msg);
     return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

@@ -101,7 +101,8 @@ export default function PropertyForm({ property }: { property?: Property }) {
       const url = await uploadFile(file);
       set('image_url', url);
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Upload failed');
+      const msg = e instanceof Error ? e.message : 'Upload failed';
+      setError(`Main image upload failed: ${msg}`);
     } finally {
       setUploading(false);
     }
@@ -118,7 +119,8 @@ export default function PropertyForm({ property }: { property?: Property }) {
       }
       setForm((prev) => ({ ...prev, images: [...prev.images, ...urls] }));
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Upload failed');
+      const msg = e instanceof Error ? e.message : 'Upload failed';
+      setError(`Image upload failed: ${msg}`);
     } finally {
       setUploadingExtra(false);
     }
