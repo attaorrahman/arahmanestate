@@ -4,6 +4,8 @@ import { supabaseServer } from '@/lib/supabase-server';
 import { isValidDate, isValidSlot, formatSlotLabel } from '@/lib/meeting-slots';
 import { SESSION_COOKIE, verifySessionToken } from '@/lib/admin-auth';
 
+export const dynamic = 'force-dynamic';
+
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || 'mail.bnhmasterkey.ae',
   port: Number(process.env.SMTP_PORT) || 465,

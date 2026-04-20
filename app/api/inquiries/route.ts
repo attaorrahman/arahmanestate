@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import { supabaseServer } from '@/lib/supabase-server';
 
+export const dynamic = 'force-dynamic';
+
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || 'mail.bnhmasterkey.ae',
   port: Number(process.env.SMTP_PORT) || 465,
