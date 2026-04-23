@@ -1,7 +1,7 @@
 'use client';
 
-import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 import { Bed, Bath, Square, MapPin, Heart, CircleCheck as CheckCircle2, ArrowUpRight } from 'lucide-react';
 import type { Property } from '@/lib/types';
 import { formatPrice } from '@/lib/utils';
@@ -14,12 +14,24 @@ interface Props {
 
 export default function PropertyCard({ property, priority = false }: Props) {
   const [liked, setLiked] = useState(false);
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
   const { t } = useLanguage();
 
+  const handleViewDetails = () => {
+    startTransition(() => {
+      router.push(`/property/${property.id}`);
+    });
+  };
+
   return (
-    <div className="card-hover bg-white rounded-sm overflow-hidden border border-gray-100 group">
-      <Link href={`/property/${property.id}`} className="block">
-        <div className="relative image-zoom aspect-[4/3] bg-gray-100">
+    <>
+      {isPending && (
+        <div className="fixed inset-0 bg-white/30 z-[9997] pointer-events-none" />
+      )}
+      <div className="card-hover bg-white rounded-sm overflow-hidden border border-gray-100 group">
+        <button onClick={handleViewDetails} disabled={isPending} className="block w-full text-left disabled:opacity-50">
+          <div className="relative image-zoom aspect-[4/3] bg-gray-100">
           <img
             src={
               property.image_url
@@ -71,27 +83,27 @@ export default function PropertyCard({ property, priority = false }: Props) {
               </div>
             </div>
           )}
-        </div>
-      </Link>
+          </div>
+        </button>
 
-      <div className="p-5">
-        <div className="flex items-start justify-between mb-2">
-          <p className="font-display text-[#C9A84C] text-2xl font-bold">
-            {formatPrice(property.price, property.price_type)}
-            {property.price_type === 'rent' && (
-              <span className="text-gray-400 text-sm font-body font-normal">{t('card.yr')}</span>
-            )}
-          </p>
-          <span className="text-xs font-body text-gray-400 bg-gray-50 px-2 py-1 rounded-sm capitalize border border-gray-100">
-            {property.property_type}
-          </span>
-        </div>
+        <div className="p-5">
+          <div className="flex items-start justify-between mb-2">
+            <p className="font-display text-[#C9A84C] text-2xl font-bold">
+              {formatPrice(property.price, property.price_type)}
+              {property.price_type === 'rent' && (
+                <span className="text-gray-400 text-sm font-body font-normal">{t('card.yr')}</span>
+              )}
+            </p>
+            <span className="text-xs font-body text-gray-400 bg-gray-50 px-2 py-1 rounded-sm capitalize border border-gray-100">
+              {property.property_type}
+            </span>
+          </div>
 
-        <Link href={`/property/${property.id}`} className="group/title">
-          <h3 className="font-display text-gray-900 text-lg font-semibold leading-snug mb-2 line-clamp-2 group-hover/title:text-[#C9A84C] transition-colors">
-            {property.title}
-          </h3>
-        </Link>
+          <button onClick={handleViewDetails} disabled={isPending} className="group/title text-left w-full disabled:opacity-50">
+            <h3 className="font-display text-gray-900 text-lg font-semibold leading-snug mb-2 line-clamp-2 group-hover/title:text-[#C9A84C] transition-colors">
+              {property.title}
+            </h3>
+          </button>
 
         <div className="flex items-center gap-1.5 mb-4">
           <MapPin size={13} className="text-[#C9A84C] shrink-0" />
@@ -119,14 +131,16 @@ export default function PropertyCard({ property, priority = false }: Props) {
           )}
         </div>
 
-        <Link
-          href={`/property/${property.id}`}
-          className="mt-4 w-full flex items-center justify-center gap-2 border border-[#C9A84C]/40 text-[#C9A84C] hover:bg-[#C9A84C] hover:text-white transition-all duration-200 py-2.5 rounded-sm font-body text-sm font-medium group/btn"
+        <button
+          onClick={handleViewDetails}
+          disabled={isPending}
+          className="mt-4 w-full flex items-center justify-center gap-2 border border-[#C9A84C]/40 text-[#C9A84C] hover:bg-[#C9A84C] hover:text-white transition-all duration-200 py-2.5 rounded-sm font-body text-sm font-medium group/btn disabled:opacity-50"
         >
           {t('card.view_details')}
           <ArrowUpRight size={14} className="transition-transform group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
-        </Link>
+        </button>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

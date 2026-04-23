@@ -1,11 +1,20 @@
 'use client';
 
-import Link from 'next/link';
+import { useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 import { ArrowRight } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 
 export default function FeaturedPropertiesHeader() {
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
   const { t, dir } = useLanguage();
+
+  const handleBrowse = () => {
+    startTransition(() => {
+      router.push('/properties');
+    });
+  };
 
   return (
     <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-14 gap-6" dir={dir}>
@@ -23,13 +32,14 @@ export default function FeaturedPropertiesHeader() {
           {t('featured.description')}
         </p>
       </div>
-      <Link
-        href="/properties"
-        className="btn-gold inline-flex items-center gap-2 px-6 py-3 rounded-sm font-body text-sm font-medium whitespace-nowrap shrink-0"
+      <button
+        onClick={handleBrowse}
+        disabled={isPending}
+        className="btn-gold inline-flex items-center gap-2 px-6 py-3 rounded-sm font-body text-sm font-medium whitespace-nowrap shrink-0 disabled:opacity-50"
       >
         {t('featured.view_all')}
         <ArrowRight size={15} />
-      </Link>
+      </button>
     </div>
   );
 }

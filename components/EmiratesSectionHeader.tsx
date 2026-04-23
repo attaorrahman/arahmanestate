@@ -1,11 +1,20 @@
 'use client';
 
-import Link from 'next/link';
+import { useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 import { ArrowRight } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 
 export default function EmiratesSectionHeader() {
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
   const { t, dir } = useLanguage();
+
+  const handleViewAll = () => {
+    startTransition(() => {
+      router.push('/properties/dubai');
+    });
+  };
 
   return (
     <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-14 gap-6" dir={dir}>
@@ -23,13 +32,14 @@ export default function EmiratesSectionHeader() {
           {t('emirates.description')}
         </p>
       </div>
-      <Link
-        href="/properties/dubai"
-        className="btn-gold inline-flex items-center gap-2 px-6 py-3 rounded-sm font-body text-sm font-medium whitespace-nowrap shrink-0"
+      <button
+        onClick={handleViewAll}
+        disabled={isPending}
+        className="btn-gold inline-flex items-center gap-2 px-6 py-3 rounded-sm font-body text-sm font-medium whitespace-nowrap shrink-0 disabled:opacity-50"
       >
         {t('emirates.view_all')}
         <ArrowRight size={15} />
-      </Link>
+      </button>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 'use client';
 
-import Link from 'next/link';
+import { useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 import { ArrowRight, MapPin, Building2 } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 import type { Emirate } from '@/lib/types';
@@ -20,22 +21,35 @@ interface Props {
 }
 
 export default function EmiratesSectionCards({ emirates }: Props) {
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
   const { t } = useLanguage();
 
+  const handleEmirateClick = (slug: string) => {
+    startTransition(() => {
+      router.push(`/properties/${slug}`);
+    });
+  };
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      {emirates.map((emirate, i) => {
-        const keys = highlightKeys[emirate.slug] ?? {
-          taglineKey: 'emirates.tagline_default',
-          highlightKey: 'emirates.highlight_explore',
-        };
-        return (
-          <Link
-            key={emirate.id}
-            href={`/properties/${emirate.slug}`}
-            className="group relative bg-white rounded-sm overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 animate-fade-in-up flex flex-col"
-            style={{ animationDelay: `${i * 0.07}s` }}
-          >
+    <>
+      {isPending && (
+        <div className="fixed inset-0 bg-white/30 z-[9997] pointer-events-none" />
+      )}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {emirates.map((emirate, i) => {
+          const keys = highlightKeys[emirate.slug] ?? {
+            taglineKey: 'emirates.tagline_default',
+            highlightKey: 'emirates.highlight_explore',
+          };
+          return (
+            <button
+              key={emirate.id}
+              onClick={() => handleEmirateClick(emirate.slug)}
+              disabled={isPending}
+              className="group relative bg-white rounded-sm overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 animate-fade-in-up flex flex-col text-left disabled:opacity-50"
+              style={{ animationDelay: `${i * 0.07}s` }}
+            >
             <div className="relative h-48 overflow-hidden bg-gray-100">
               <img
                 src={`${emirate.image_url}?auto=compress&cs=tinysrgb&w=500&q=75`}
@@ -89,9 +103,10 @@ export default function EmiratesSectionCards({ emirates }: Props) {
                 </div>
               </div>
             </div>
-          </Link>
-        );
-      })}
-    </div>
+            </button>
+          );
+        })}
+      </div>
+    </>
   );
 }

@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 import { Instagram, Linkedin, Twitter, Facebook, Phone, Mail, MapPin, ArrowRight, Send } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 
@@ -22,9 +23,17 @@ const socials = [
 ];
 
 export default function Footer() {
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
   const { t, dir } = useLanguage();
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+
+  const handleNavigation = (href: string) => {
+    startTransition(() => {
+      router.push(href);
+    });
+  };
 
   const quickLinks = [
     { label: t('footer.for_sale'), href: '/properties/dubai?type=sale' },
@@ -86,19 +95,25 @@ export default function Footer() {
             <h4 className="font-display text-white font-semibold text-base mb-5">
               {t('footer.browse_emirate')}
             </h4>
-            <ul className="space-y-3">
-              {emirateLinks.map((link) => (
-                <li key={link.key}>
-                  <Link
-                    href={link.href}
-                    className="font-body text-sm text-gray-500 hover:text-[#C9A84C] transition-colors flex items-center gap-2 group"
-                  >
-                    <ArrowRight size={12} className="opacity-0 group-hover:opacity-100 text-[#C9A84C] transition-opacity -ml-3.5 group-hover:ml-0" />
-                    {link.key}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            <>
+              {isPending && (
+                <div className="fixed inset-0 bg-white/30 z-[9997] pointer-events-none" />
+              )}
+              <ul className="space-y-3">
+                {emirateLinks.map((link) => (
+                  <li key={link.key}>
+                    <button
+                      onClick={() => handleNavigation(link.href)}
+                      disabled={isPending}
+                      className="font-body text-sm text-gray-500 hover:text-[#C9A84C] transition-colors flex items-center gap-2 group text-left disabled:opacity-50"
+                    >
+                      <ArrowRight size={12} className="opacity-0 group-hover:opacity-100 text-[#C9A84C] transition-opacity -ml-3.5 group-hover:ml-0" />
+                      {link.key}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </>
           </div>
 
           <div>

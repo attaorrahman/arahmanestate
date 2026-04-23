@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { randomUUID } from 'crypto';
 import nodemailer from 'nodemailer';
 import { supabaseServer } from '@/lib/supabase-server';
 import { isValidDate, isValidSlot, formatSlotLabel } from '@/lib/meeting-slots';
@@ -117,6 +118,7 @@ export async function POST(req: NextRequest) {
     const { data: newMeeting, error } = await supabaseServer
       .from('meetings')
       .insert({
+        id: randomUUID(),
         name,
         email,
         phone,

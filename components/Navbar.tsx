@@ -1,13 +1,15 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
+import { useState, useEffect, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 import { Menu, X, Phone, Globe } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
   const { lang, toggle, t } = useLanguage();
 
   const navLinks = [
@@ -26,35 +28,51 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-400 bg-white border-b border-gray-100 ${
-        scrolled
-          ? 'shadow-lg py-1.5'
-          : 'py-2'
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between">
-          <Link href="/" className="flex items-center group">
-            <img
-              src="/BNHLogo.jpg"
-              alt="BNH MasterKey Properties L.L.C"
-              className="h-10 sm:h-16 sm:w-40 shrink-0 object-contain"
-            />
-          </Link>
+  const handleNavClick = (href: string) => {
+    startTransition(() => {
+      router.push(href);
+    });
+  };
 
-          <nav className="hidden lg:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="nav-link font-body text-sm font-medium text-gray-700 hover:text-[#C9A84C] transition-colors"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
+  return (
+    <>
+      {/* Loading indicator */}
+      {isPending && (
+        <>
+          <div className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#C9A84C] to-[#E8D5A3] z-[9998] animate-pulse" />
+          <div className="fixed inset-0 bg-white/30 z-[9997] pointer-events-none" />
+        </>
+      )}
+
+      <header
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-400 bg-white border-b border-gray-100 ${
+          scrolled
+            ? 'shadow-lg py-1.5'
+            : 'py-2'
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between">
+            <button onClick={() => handleNavClick('/')} className="flex items-center group">
+              <img
+                src="/BNHLogo.jpg"
+                alt="BNH MasterKey Properties L.L.C"
+                className="h-10 sm:h-16 sm:w-40 shrink-0 object-contain"
+              />
+            </button>
+
+            <nav className="hidden lg:flex items-center gap-8">
+              {navLinks.map((link) => (
+                <button
+                  key={link.href}
+                  onClick={() => handleNavClick(link.href)}
+                  disabled={isPending}
+                  className="nav-link font-body text-sm font-medium text-gray-700 hover:text-[#C9A84C] transition-colors disabled:opacity-50"
+                >
+                  {link.label}
+                </button>
+              ))}
+            </nav>
 
           <div className="hidden lg:flex items-center gap-3">
             {/* Language toggle */}
@@ -74,12 +92,13 @@ export default function Navbar() {
               <Phone size={14} className="text-[#C9A84C]" />
               +971 55 775 7123
             </a>
-            <Link
-              href="/admin/login"
-              className="btn-gold px-5 py-2 rounded-sm text-sm font-body font-medium tracking-wide"
+            <button
+              onClick={() => handleNavClick('/admin/login')}
+              disabled={isPending}
+              className="btn-gold px-5 py-2 rounded-sm text-sm font-body font-medium tracking-wide disabled:opacity-50"
             >
               {t('nav.admin')}
-            </Link>
+            </button>
           </div>
 
           <button
@@ -96,14 +115,17 @@ export default function Navbar() {
         <div className="lg:hidden bg-white border-t border-gray-100 mt-2">
           <div className="max-w-7xl mx-auto px-4 py-6 flex flex-col gap-5">
             {navLinks.map((link) => (
-              <Link
+              <button
                 key={link.href}
-                href={link.href}
-                className="font-body text-gray-700 hover:text-[#C9A84C] transition-colors text-base"
-                onClick={() => setMobileOpen(false)}
+                onClick={() => {
+                  setMobileOpen(false);
+                  handleNavClick(link.href);
+                }}
+                disabled={isPending}
+                className="font-body text-gray-700 hover:text-[#C9A84C] transition-colors text-base text-left disabled:opacity-50"
               >
                 {link.label}
-              </Link>
+              </button>
             ))}
             <div className="pt-4 border-t border-gray-100 flex flex-col gap-3">
               {/* Mobile language toggle */}
@@ -118,17 +140,21 @@ export default function Navbar() {
                 <Phone size={14} className="text-[#C9A84C]" />
                 +971 55 775 7123
               </a>
-              <Link
-                href="/admin/login"
-                className="btn-gold px-5 py-2.5 rounded-sm text-sm font-body font-medium text-center"
-                onClick={() => setMobileOpen(false)}
+              <button
+                onClick={() => {
+                  setMobileOpen(false);
+                  handleNavClick('/admin/login');
+                }}
+                disabled={isPending}
+                className="btn-gold px-5 py-2.5 rounded-sm text-sm font-body font-medium text-center disabled:opacity-50"
               >
                 {t('nav.admin')}
-              </Link>
+              </button>
             </div>
           </div>
         </div>
       )}
     </header>
+    </>
   );
 }
