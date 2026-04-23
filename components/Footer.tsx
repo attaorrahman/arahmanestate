@@ -97,9 +97,9 @@ export default function Footer() {
             </h4>
             <>
               {isPending && (
-                <div className="fixed inset-0 bg-white/30 z-[9997] pointer-events-none" />
+                <div className="fixed inset-0 bg-white/30 z-[9997] pointer-events-none" suppressHydrationWarning />
               )}
-              <ul className="space-y-3">
+              <ul className="space-y-3" suppressHydrationWarning>
                 {emirateLinks.map((link) => (
                   <li key={link.key}>
                     <button

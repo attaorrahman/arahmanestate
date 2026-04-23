@@ -34,9 +34,9 @@ export default function EmiratesSectionCards({ emirates }: Props) {
   return (
     <>
       {isPending && (
-        <div className="fixed inset-0 bg-white/30 z-[9997] pointer-events-none" />
+        <div className="fixed inset-0 bg-white/30 z-[9997] pointer-events-none" suppressHydrationWarning />
       )}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" suppressHydrationWarning>
         {emirates.map((emirate, i) => {
           const keys = highlightKeys[emirate.slug] ?? {
             taglineKey: 'emirates.tagline_default',

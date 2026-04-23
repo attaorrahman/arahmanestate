@@ -29,9 +29,18 @@ export default function Navbar() {
   }, []);
 
   const handleNavClick = (href: string) => {
-    startTransition(() => {
-      router.push(href);
-    });
+    if (href.startsWith('#')) {
+      // Anchor link — scroll to section
+      const element = document.querySelector(href);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      // Page navigation
+      startTransition(() => {
+        router.push(href);
+      });
+    }
   };
 
   return (
@@ -39,8 +48,8 @@ export default function Navbar() {
       {/* Loading indicator */}
       {isPending && (
         <>
-          <div className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#C9A84C] to-[#E8D5A3] z-[9998] animate-pulse" />
-          <div className="fixed inset-0 bg-white/30 z-[9997] pointer-events-none" />
+          <div className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#C9A84C] to-[#E8D5A3] z-[9998] animate-pulse" suppressHydrationWarning />
+          <div className="fixed inset-0 bg-white/30 z-[9997] pointer-events-none" suppressHydrationWarning />
         </>
       )}
 
@@ -50,6 +59,7 @@ export default function Navbar() {
             ? 'shadow-lg py-1.5'
             : 'py-2'
         }`}
+        suppressHydrationWarning
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">

@@ -27,10 +27,10 @@ export default function PropertyCard({ property, priority = false }: Props) {
   return (
     <>
       {isPending && (
-        <div className="fixed inset-0 bg-white/30 z-[9997] pointer-events-none" />
+        <div className="fixed inset-0 bg-white/30 z-[9997] pointer-events-none" suppressHydrationWarning />
       )}
-      <div className="card-hover bg-white rounded-sm overflow-hidden border border-gray-100 group">
-        <button onClick={handleViewDetails} disabled={isPending} className="block w-full text-left disabled:opacity-50">
+      <div className="card-hover bg-white rounded-sm overflow-hidden border border-gray-100 group" suppressHydrationWarning>
+        <div onClick={handleViewDetails} role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && handleViewDetails()} className="block cursor-pointer">
           <div className="relative image-zoom aspect-[4/3] bg-gray-100">
           <img
             src={
@@ -84,7 +84,7 @@ export default function PropertyCard({ property, priority = false }: Props) {
             </div>
           )}
           </div>
-        </button>
+        </div>
 
         <div className="p-5">
           <div className="flex items-start justify-between mb-2">
@@ -99,11 +99,11 @@ export default function PropertyCard({ property, priority = false }: Props) {
             </span>
           </div>
 
-          <button onClick={handleViewDetails} disabled={isPending} className="group/title text-left w-full disabled:opacity-50">
+          <div onClick={handleViewDetails} role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && handleViewDetails()} className="group/title cursor-pointer">
             <h3 className="font-display text-gray-900 text-lg font-semibold leading-snug mb-2 line-clamp-2 group-hover/title:text-[#C9A84C] transition-colors">
               {property.title}
             </h3>
-          </button>
+          </div>
 
         <div className="flex items-center gap-1.5 mb-4">
           <MapPin size={13} className="text-[#C9A84C] shrink-0" />
