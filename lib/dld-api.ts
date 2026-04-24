@@ -1,62 +1,77 @@
 /**
- * DLD (Dubai Land Department) Real Estate Transactions API client.
+ * DDADS – Dubai Data Access Distribution System (DDA iPaaS) client.
+ *
+ * Spec sources:
+ *   - ICD_GSB-SSIS-002-SDG-SSIS-DubaiAI-GatewayToken_v1.0.0  (auth)
+ *   - SDG-DDADS-OpenAPI_PUBLICUSER_v2.1                      (data)
  *
  * Auth flow:
- *   1. Exchange API Key + Secret for a Bearer token (valid ~30 min)
- *   2. Use the token in every data request
- *   3. Re-authenticate when the token expires
+ *   1. POST JSON {grant_type, client_id, client_secret} to TOKEN_URL
+ *      with header `x-DDA-SecurityApplicationIdentifier`
+ *      → { access_token, token_type:"Bearer", expires_in }
+ *   2. Data calls: GET {baseURL}/secure/ddads/openapi/1.0.0/<entity>/<dataset>
+ *      with header `Authorization: Bearer <token>`
  *
- * When the API keys are not yet configured, the module falls back to
- * the local mock data in data/transactions.json so the page still works.
+ * Response shape: { "results": [ {row}, ... ] }
+ *
+ * Falls back to data/transactions.json on missing config or any error so the
+ * page never breaks.
  */
 
 import { Transaction } from './types';
 import fallbackData from '@/data/transactions.json';
 
-const API_BASE = process.env.DLD_API_BASE_URL || '';
-const API_KEY = process.env.DLD_API_KEY || '';
-const API_SECRET = process.env.DLD_API_SECRET || '';
+const TOKEN_URL = process.env.DDADS_TOKEN_URL || '';
+const API_BASE = process.env.DDADS_API_BASE_URL || '';
+const CLIENT_ID = process.env.DDADS_CLIENT_ID || '';
+const CLIENT_SECRET = process.env.DDADS_CLIENT_SECRET || '';
+const SECURITY_APP_ID = process.env.DDADS_SECURITY_APP_ID || '';
 
-// Token is only valid on the server (env vars are server-side)
+// DLD transactions dataset on the DDADS Open API.
+// Override with env vars if DDADS support gives you different names.
+const ENTITY = process.env.DDADS_ENTITY || 'dld';
+const DATASET = process.env.DDADS_DATASET || 'dld_transactions-open-api';
+const TRANSACTIONS_PATH = `/secure/ddads/openapi/1.0.0/${ENTITY}/${DATASET}`;
+
 let cachedToken: string | null = null;
 let tokenExpiresAt = 0;
 
 function isConfigured(): boolean {
   return (
+    TOKEN_URL.length > 0 &&
     API_BASE.length > 0 &&
-    API_KEY.length > 0 &&
-    API_SECRET.length > 0 &&
-    API_KEY !== 'PASTE_YOUR_API_KEY_HERE'
+    CLIENT_ID.length > 0 &&
+    CLIENT_SECRET.length > 0 &&
+    SECURITY_APP_ID.length > 0
   );
 }
 
-/**
- * Get a valid OAuth Bearer token, refreshing if expired.
- */
 async function getToken(): Promise<string> {
-  if (cachedToken && Date.now() < tokenExpiresAt) {
-    return cachedToken;
-  }
+  if (cachedToken && Date.now() < tokenExpiresAt) return cachedToken;
 
-  // The token endpoint follows the Data.Dubai / Dubai Pulse pattern
-  const tokenUrl =
-    'https://apis.data.dubai/oauth/client_credential/accesstoken?grant_type=client_credentials';
-
-  const res = await fetch(tokenUrl, {
+  const res = await fetch(TOKEN_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: `client_id=${encodeURIComponent(API_KEY)}&client_secret=${encodeURIComponent(API_SECRET)}`,
+    headers: {
+      'Content-Type': 'application/json',
+      'x-DDA-SecurityApplicationIdentifier': SECURITY_APP_ID,
+    },
+    body: JSON.stringify({
+      grant_type: 'client_credentials',
+      client_id: CLIENT_ID,
+      client_secret: CLIENT_SECRET,
+    }),
+    cache: 'no-store',
   });
 
   if (!res.ok) {
-    throw new Error(`DLD Auth failed: ${res.status} ${res.statusText}`);
+    const body = await res.text().catch(() => '');
+    throw new Error(`DDADS auth failed: ${res.status} ${res.statusText} ${body.slice(0, 200)}`);
   }
 
   const data = await res.json();
   cachedToken = data.access_token;
-  // Expire 2 min early to be safe (token is typically valid for 30 min)
-  tokenExpiresAt = Date.now() + (data.expires_in ? data.expires_in * 1000 - 120_000 : 25 * 60 * 1000);
-
+  const ttl = typeof data.expires_in === 'number' ? data.expires_in : 3600;
+  tokenExpiresAt = Date.now() + ttl * 1000 - 120_000;
   return cachedToken!;
 }
 
@@ -74,174 +89,187 @@ export interface DLDQueryParams {
   search?: string;
 }
 
-/**
- * Map raw DLD API record → our Transaction type.
- * Column names may vary; this handles common DLD/Dubai-Pulse column names.
- */
+function pickField(row: Record<string, any>, ...keys: string[]): any {
+  for (const k of keys) {
+    if (row[k] !== undefined && row[k] !== null && row[k] !== '') return row[k];
+    const lower = k.toLowerCase();
+    if (row[lower] !== undefined && row[lower] !== null && row[lower] !== '') return row[lower];
+  }
+  return undefined;
+}
+
 function mapRecord(row: Record<string, any>, index: number): Transaction {
+  const rawRooms = pickField(row, 'rooms_en', 'ROOMS_EN', 'rooms', 'no_of_rooms') ?? '';
+  const bedrooms = String(rawRooms).toLowerCase() === 'studio'
+    ? 'Studio'
+    : parseInt(String(rawRooms)) || 0;
+
+  const areaSqm = parseFloat(
+    pickField(row, 'procedure_area', 'PROCEDURE_AREA', 'area_sqm', 'actual_area') ?? '0'
+  );
+  const area_sqft_direct = pickField(row, 'area_sqft', 'AREA_SQFT');
+  const area_sqft = area_sqft_direct
+    ? parseFloat(String(area_sqft_direct))
+    : Math.round(areaSqm * 10.764);
+
+  const price = parseFloat(
+    pickField(row, 'trans_value', 'TRANS_VALUE', 'actual_worth', 'amount') ?? '0'
+  ) || 0;
+
+  const transGroup = String(
+    pickField(row, 'trans_group_en', 'TRANS_GROUP_EN', 'transaction_group') ?? ''
+  );
+  const transaction_type: 'Sale' | 'Resale' = transGroup.toLowerCase().includes('resale')
+    ? 'Resale'
+    : 'Sale';
+
+  const usageRaw = String(
+    pickField(row, 'property_usage_en', 'PROPERTY_USAGE_EN', 'property_usage') ?? 'Residential'
+  );
+  const property_usage: 'Residential' | 'Commercial' = usageRaw.toLowerCase().includes('commercial')
+    ? 'Commercial'
+    : 'Residential';
+
+  const id = pickField(row, 'transaction_id', 'TRANSACTION_ID', 'id') ?? `ddads-${index}`;
+
   return {
-    id: row.TRANSACTION_ID || row.transaction_id || `dld-${index}`,
-    project_name: row.PROJECT_EN || row.project_en || row.PROJECT_NAME || 'N/A',
-    building_name: row.BUILDING_NAME_EN || row.building_name_en || row.PROPERTY_EN || 'N/A',
-    unit_type: row.PROPERTY_TYPE_EN || row.property_type_en || 'Apartment',
-    bedrooms: row.ROOMS_EN === 'Studio' || row.rooms_en === 'Studio'
-      ? 'Studio'
-      : parseInt(row.ROOMS_EN || row.rooms_en || '0') || 0,
-    area_sqft: Math.round(
-      parseFloat(row.PROCEDURE_AREA || row.procedure_area || row.AREA_SQFT || '0') * 10.764
-    ) || 0, // DLD reports in sqm, convert to sqft
-    price: parseFloat(row.TRANS_VALUE || row.trans_value || row.ACTUAL_WORTH || '0') || 0,
-    price_per_sqft: 0, // computed below
-    transaction_type: (row.TRANS_GROUP_EN || row.trans_group_en || 'Sale').includes('Resale')
-      ? 'Resale'
-      : 'Sale',
-    property_usage: (row.PROPERTY_USAGE_EN || row.property_usage_en || 'Residential').includes('Commercial')
-      ? 'Commercial'
-      : 'Residential',
-    location: row.AREA_EN || row.area_en || row.NEAREST_LANDMARK_EN || 'Dubai',
-    emirate: 'Dubai', // DLD data is Dubai-only
-    sold_by: (row.TRANS_GROUP_EN || row.trans_group_en || '').includes('Resale') ? 'Individual' : 'Developer',
-    date: row.INSTANCE_DATE || row.instance_date || row.TRANSACTION_DATE || new Date().toISOString().slice(0, 10),
-    capital_gain: 0, // not available from raw DLD data
+    id: String(id),
+    project_name: pickField(row, 'project_en', 'PROJECT_EN', 'project_name', 'project_name_en') ?? 'N/A',
+    building_name: pickField(row, 'building_name_en', 'BUILDING_NAME_EN', 'property_en', 'building_name') ?? 'N/A',
+    unit_type: pickField(row, 'property_sub_type_en', 'PROPERTY_SUB_TYPE_EN', 'property_type_en', 'PROPERTY_TYPE_EN') ?? 'Apartment',
+    bedrooms,
+    area_sqft: area_sqft || 0,
+    price,
+    price_per_sqft: area_sqft > 0 ? Math.round(price / area_sqft) : 0,
+    transaction_type,
+    property_usage,
+    location: pickField(row, 'area_en', 'AREA_EN', 'nearest_landmark_en', 'area_name') ?? 'Dubai',
+    emirate: 'Dubai',
+    sold_by: transaction_type === 'Resale' ? 'Individual' : 'Developer',
+    date: pickField(row, 'instance_date', 'INSTANCE_DATE', 'transaction_date', 'date') ?? new Date().toISOString().slice(0, 10),
+    capital_gain: 0,
   };
 }
 
-/**
- * Fetch transactions from the live DLD API.
- * Falls back to local mock data when API keys are not configured.
- */
+function buildQuery(params: DLDQueryParams): string {
+  const sp = new URLSearchParams();
+
+  // Pagination – DDADS uses page + pageSize
+  const pageSize = params.limit ?? 12;
+  const page = Math.floor((params.offset ?? 0) / pageSize) + 1;
+  sp.set('pageSize', String(pageSize));
+  sp.set('page', String(page));
+
+  // Filtering – DDADS uses a single `filter` string of key=value comma-separated pairs
+  const filters: string[] = [];
+  if (params.area && params.area !== 'All') filters.push(`area_en=${params.area}`);
+  if (params.property_type && params.property_type !== 'All') {
+    filters.push(`property_type_en=${params.property_type}`);
+  }
+  if (params.transaction_type && params.transaction_type !== 'All') {
+    filters.push(`trans_group_en=${params.transaction_type === 'Resale' ? 'Resales' : 'Sales'}`);
+  }
+  if (filters.length) sp.set('filter', filters.join(','));
+
+  // Sorting – DDADS uses order_by + order_dir
+  const sortMap: Record<string, { col: string; dir: 'asc' | 'desc' }> = {
+    date_desc: { col: 'instance_date', dir: 'desc' },
+    date_asc: { col: 'instance_date', dir: 'asc' },
+    price_desc: { col: 'trans_value', dir: 'desc' },
+    price_asc: { col: 'trans_value', dir: 'asc' },
+  };
+  if (params.sort && sortMap[params.sort]) {
+    sp.set('order_by', sortMap[params.sort].col);
+    sp.set('order_dir', sortMap[params.sort].dir);
+  }
+
+  return `?${sp.toString()}`;
+}
+
+async function callDDADS(url: string, token: string) {
+  return fetch(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: 'application/json',
+    },
+    next: { revalidate: 300 },
+  });
+}
+
+function applyMockFilters(data: Transaction[], params: DLDQueryParams): Transaction[] {
+  let result = data;
+  if (params.search) {
+    const q = params.search.toLowerCase();
+    result = result.filter(
+      (t) =>
+        t.project_name.toLowerCase().includes(q) ||
+        t.building_name.toLowerCase().includes(q) ||
+        t.location.toLowerCase().includes(q)
+    );
+  }
+  if (params.emirate && params.emirate !== 'All') {
+    result = result.filter((t) => t.emirate === params.emirate);
+  }
+  if (params.area && params.area !== 'All') {
+    result = result.filter((t) => t.location === params.area);
+  }
+  if (params.property_type && params.property_type !== 'All') {
+    result = result.filter((t) => t.unit_type === params.property_type);
+  }
+  if (params.transaction_type && params.transaction_type !== 'All') {
+    result = result.filter((t) => t.transaction_type === params.transaction_type);
+  }
+  return result;
+}
+
 export async function fetchTransactions(params: DLDQueryParams = {}): Promise<{
   transactions: Transaction[];
   total: number;
   live: boolean;
 }> {
-  // ── Fallback to mock data if API is not configured ──
   if (!isConfigured()) {
-    let data = fallbackData as Transaction[];
-
-    // Apply client-side filters to mock data
-    if (params.search) {
-      const q = params.search.toLowerCase();
-      data = data.filter(
-        (t) =>
-          t.project_name.toLowerCase().includes(q) ||
-          t.building_name.toLowerCase().includes(q) ||
-          t.location.toLowerCase().includes(q)
-      );
-    }
-    if (params.emirate && params.emirate !== 'All') {
-      data = data.filter((t) => t.emirate === params.emirate);
-    }
-    if (params.area && params.area !== 'All') {
-      data = data.filter((t) => t.location === params.area);
-    }
-    if (params.property_type && params.property_type !== 'All') {
-      data = data.filter((t) => t.unit_type === params.property_type);
-    }
-    if (params.transaction_type && params.transaction_type !== 'All') {
-      data = data.filter((t) => t.transaction_type === params.transaction_type);
-    }
-
-    const total = data.length;
+    const filtered = applyMockFilters(fallbackData as Transaction[], params);
     const offset = params.offset || 0;
     const limit = params.limit || 12;
-    data = data.slice(offset, offset + limit);
-
-    return { transactions: data, total, live: false };
+    return { transactions: filtered.slice(offset, offset + limit), total: filtered.length, live: false };
   }
 
-  // ── Live API call ──
   try {
-    const token = await getToken();
+    let token = await getToken();
+    const url = `${API_BASE}${TRANSACTIONS_PATH}${buildQuery(params)}`;
+    let res = await callDDADS(url, token);
 
-    // Build query string for DLD API
-    const queryParts: string[] = [];
-    if (params.limit) queryParts.push(`limit=${params.limit}`);
-    if (params.offset) queryParts.push(`offset=${params.offset}`);
-
-    // Build filter conditions (DLD API uses SQL-like where clauses)
-    const filters: string[] = [];
-    if (params.area && params.area !== 'All') {
-      filters.push(`AREA_EN='${params.area}'`);
+    if (res.status === 401) {
+      cachedToken = null;
+      tokenExpiresAt = 0;
+      token = await getToken();
+      res = await callDDADS(url, token);
     }
-    if (params.property_type && params.property_type !== 'All') {
-      filters.push(`PROPERTY_TYPE_EN='${params.property_type}'`);
-    }
-    if (params.transaction_type && params.transaction_type !== 'All') {
-      const group = params.transaction_type === 'Resale' ? 'Resale' : 'Sales';
-      filters.push(`TRANS_GROUP_EN like '%${group}%'`);
-    }
-    if (params.date_from) {
-      filters.push(`INSTANCE_DATE>='${params.date_from}'`);
-    }
-    if (params.search) {
-      filters.push(`(PROJECT_EN like '%${params.search}%' or AREA_EN like '%${params.search}%')`);
-    }
-
-    if (filters.length > 0) {
-      queryParts.push(`where=${encodeURIComponent(filters.join(' and '))}`);
-    }
-
-    // Sort
-    if (params.sort) {
-      const sortMap: Record<string, string> = {
-        date_desc: 'INSTANCE_DATE desc',
-        date_asc: 'INSTANCE_DATE asc',
-        price_desc: 'TRANS_VALUE desc',
-        price_asc: 'TRANS_VALUE asc',
-      };
-      if (sortMap[params.sort]) {
-        queryParts.push(`sort=${encodeURIComponent(sortMap[params.sort])}`);
-      }
-    }
-
-    const url = `${API_BASE}${queryParts.length ? '?' + queryParts.join('&') : ''}`;
-
-    const res = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: 'application/json',
-      },
-      next: { revalidate: 300 }, // Cache for 5 min on server
-    });
 
     if (!res.ok) {
-      // If token expired, clear and retry once
-      if (res.status === 401) {
-        cachedToken = null;
-        tokenExpiresAt = 0;
-        const newToken = await getToken();
-        const retryRes = await fetch(url, {
-          headers: { Authorization: `Bearer ${newToken}`, Accept: 'application/json' },
-        });
-        if (!retryRes.ok) throw new Error(`DLD API retry failed: ${retryRes.status}`);
-        const retryData = await retryRes.json();
-        const records = retryData.result?.records || retryData.records || retryData || [];
-        const transactions = records.map(mapRecord).filter((t: Transaction) => t.price > 0);
-        transactions.forEach((t: Transaction) => {
-          if (t.area_sqft > 0) t.price_per_sqft = Math.round(t.price / t.area_sqft);
-        });
-        return { transactions, total: retryData.result?.total || transactions.length, live: true };
-      }
-      throw new Error(`DLD API error: ${res.status}`);
+      const body = await res.text().catch(() => '');
+      throw new Error(`DDADS API ${res.status}: ${body.slice(0, 200)}`);
     }
 
     const json = await res.json();
-    const records = json.result?.records || json.records || json || [];
-    const transactions = records.map(mapRecord).filter((t: Transaction) => t.price > 0);
-    transactions.forEach((t: Transaction) => {
-      if (t.area_sqft > 0) t.price_per_sqft = Math.round(t.price / t.area_sqft);
-    });
+    const records: any[] =
+      json.results ??
+      json.result?.records ??
+      json.records ??
+      json.data ??
+      (Array.isArray(json) ? json : []);
 
-    return {
-      transactions,
-      total: json.result?.total || json.total || transactions.length,
-      live: true,
-    };
+    const transactions = records
+      .map(mapRecord)
+      .filter((t: Transaction) => t.price > 0);
+
+    const total = json.total ?? json.totalCount ?? json.result?.total ?? transactions.length;
+    return { transactions, total, live: true };
   } catch (err) {
-    console.error('DLD API error, falling back to mock data:', err);
-    // Graceful fallback
-    const data = fallbackData as Transaction[];
-    return { transactions: data.slice(0, params.limit || 12), total: data.length, live: false };
+    console.error('[DDADS] live fetch failed, serving mock data:', err);
+    const filtered = applyMockFilters(fallbackData as Transaction[], params);
+    const offset = params.offset || 0;
+    const limit = params.limit || 12;
+    return { transactions: filtered.slice(offset, offset + limit), total: filtered.length, live: false };
   }
 }

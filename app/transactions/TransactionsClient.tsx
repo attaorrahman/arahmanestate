@@ -63,7 +63,7 @@ function formatFullPrice(price: number): string {
   return price.toLocaleString('en-AE');
 }
 
-export default function TransactionsClient({ initialTransactions: transactions }: TransactionsClientProps) {
+export default function TransactionsClient({ initialTransactions: transactions, isLive }: TransactionsClientProps) {
   const { t, dir } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [emirate, setEmirate] = useState('All');
@@ -214,9 +214,22 @@ export default function TransactionsClient({ initialTransactions: transactions }
       <div className="relative pt-28 pb-8 px-4">
         <div className="absolute inset-0 bg-gradient-to-b from-[#C9A84C]/5 to-transparent pointer-events-none" />
         <div className="max-w-7xl mx-auto relative">
-          <h1 className="font-display text-3xl sm:text-4xl text-white font-bold mb-2">
-            {t('txn.title')} <span className="text-gold">{t('txn.title2')}</span>
-          </h1>
+          <div className="flex items-center gap-3 mb-2 flex-wrap">
+            <h1 className="font-display text-3xl sm:text-4xl text-white font-bold">
+              {t('txn.title')} <span className="text-gold">{t('txn.title2')}</span>
+            </h1>
+            <span
+              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] uppercase tracking-wider font-body font-medium border ${
+                isLive
+                  ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+                  : 'bg-amber-500/10 text-amber-400 border-amber-500/30'
+              }`}
+              title={isLive ? 'Live data from DDADS (Dubai Data Access Distribution System)' : 'Showing sample data – DDADS API unavailable'}
+            >
+              <span className={`w-1.5 h-1.5 rounded-full ${isLive ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
+              {isLive ? 'Live · DDADS' : 'Sample data'}
+            </span>
+          </div>
           <p className="text-gray-400 font-body text-sm sm:text-base max-w-2xl">
             {t('txn.description')}
           </p>
