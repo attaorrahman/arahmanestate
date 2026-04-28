@@ -65,7 +65,7 @@ export default function Navbar() {
           <div className="flex items-center justify-between">
             <button onClick={() => handleNavClick('/')} className="flex items-center group">
               <img
-                src="/BNHLogo.jpg"
+                src="/BNHLogo5.jpeg"
                 alt="BNH MasterKey Properties L.L.C"
                 className="h-10 sm:h-16 sm:w-40 shrink-0 object-contain"
               />

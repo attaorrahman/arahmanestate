@@ -55,24 +55,12 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="py-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
           <div className="lg:col-span-1">
-            <Link href="/" className="flex items-center gap-3 mb-5">
+            <Link href="/" className="inline-flex items-center mb-5">
               <img
-                src="/logo.jpeg"
-                alt="BNH MasterKey logo"
-                className="w-12 h-12 shrink-0 object-contain"
+                src="/BNHLogo5.jpeg"
+                alt="BNH MasterKey Properties L.L.C"
+                className="h-16 w-auto shrink-0 object-contain"
               />
-              <div className="leading-tight">
-                <span className="font-display text-white text-base font-bold tracking-[0.15em] block">
-                  BNH <span className="text-[#C9A84C]">MASTERKEY</span>
-                </span>
-                <div className="flex items-center gap-2 mt-1.5">
-                  <span className="h-px flex-1 bg-white/25" />
-                  <span className="text-[10px] text-gray-400 tracking-[0.3em] uppercase font-body leading-none whitespace-nowrap">
-                    {t('common.properties_llc')}
-                  </span>
-                  <span className="h-px flex-1 bg-white/25" />
-                </div>
-              </div>
             </Link>
             <p className="font-body text-sm leading-relaxed mb-6 text-gray-500">
               {t('footer.description')}

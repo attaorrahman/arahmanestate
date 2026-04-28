@@ -80,7 +80,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       >
         {/* Logo */}
         <div className="flex items-center gap-3 px-6 py-5 border-b border-white/8">
-          <img src="/BNHLogo.jpg" alt="BNH MasterKey" className="w-8 h-8 rounded-sm object-contain" />
+          <img src="/BNHLogo5.jpeg" alt="BNH MasterKey" className="w-8 h-8 rounded-sm object-contain" />
           <div>
             <p className="text-white font-display font-bold text-sm leading-none">BNH <span className="text-[#C9A84C]">MasterKey</span></p>
             <p className="text-gray-500 text-xs mt-0.5">Admin Panel</p>

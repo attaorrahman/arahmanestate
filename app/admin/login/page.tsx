@@ -41,7 +41,7 @@ export default function AdminLoginPage() {
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="flex items-center justify-center gap-3 mb-8">
-          <img src="/BNHLogo.jpg" alt="BNH MasterKey" className="w-10 h-10 rounded-sm object-contain" />
+          <img src="/BNHLogo5.jpeg" alt="BNH MasterKey" className="w-10 h-10 rounded-sm object-contain" />
           <div>
             <p className="text-white font-display font-bold">BNH <span className="text-[#C9A84C]">MasterKey</span></p>
             <p className="text-gray-500 text-xs">Admin Panel</p>
